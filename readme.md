@@ -99,3 +99,14 @@ Para zerar a base de dados, você pode simplesmente apagar a pasta `pgdata` e su
 ## Conclusão
 
 Seguindo estes passos, você instalará o Docker no Windows, configurará um ambiente Docker com PostgreSQL para desenvolvimento de um projeto Django, e se conectará ao banco de dados usando DBeaver. Esta configuração simplifica a gestão do banco de dados durante o desenvolvimento e garante que você tenha um ambiente consistente. A configuração dos volumes permite uma fácil manutenção dos dados, e a possibilidade de zerar a base de dados simplesmente apagando a pasta `pgdata`.
+
+
+# Criando Migrations
+
+python manage.py makemigrations vlr_core
+
+
+# Executando Migrations
+
+python manage.py migrate
+

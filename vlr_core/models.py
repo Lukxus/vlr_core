@@ -19,8 +19,8 @@ class SequenciaPartida(models.Model):
     data = models.DateTimeField()
     patch = models.CharField(max_length=255)
     tipo = models.IntegerField()
-    id_time1 = models.ForeignKey(Time, related_name='time1', on_delete=models.CASCADE)
-    id_time2 = models.ForeignKey(Time, related_name='time2', on_delete=models.CASCADE)
+    Id_time1 = models.ForeignKey(Time, related_name='time1', on_delete=models.CASCADE)
+    time2 = models.ForeignKey(Time, related_name='time2', on_delete=models.CASCADE)
     url = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
@@ -29,7 +29,7 @@ class SequenciaPartida(models.Model):
 class Partida(models.Model):
     sequencia_partida = models.ForeignKey(SequenciaPartida, on_delete=models.CASCADE)
     mapa = models.CharField(max_length=255)
-    id_time_vencedor = models.ForeignKey(Time, on_delete=models.SET_NULL, null=True, blank=True)
+    time_vencedor = models.ForeignKey(Time, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         db_table = 'partida'
@@ -43,10 +43,10 @@ class RoundsPartida(models.Model):
 
 class Jogador(models.Model):
     nome = models.CharField(max_length=255)
-    id_time = models.ForeignKey(Time, on_delete=models.CASCADE)
+    time = models.ForeignKey(Time, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('nome', 'id_time')
+        unique_together = ('nome', 'time')
         db_table = 'jogador'
 
 class PartidaJogador(models.Model):

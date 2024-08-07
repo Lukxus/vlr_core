@@ -20,5 +20,5 @@ from vlr_core import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('hello/<nome>/', views.hello),
+    path('jogadores/', views.lista_jogadores),
 ]

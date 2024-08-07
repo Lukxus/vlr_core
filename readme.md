@@ -110,3 +110,12 @@ python manage.py makemigrations vlr_core
 
 python manage.py migrate
 
+
+# Criando superuser
+python manage.py createsuperuser --uername admin
+admn@vlr.combr
+admin
+
+## Acessar o painel de admininstrador
+http://localhost:8000/admin/
+

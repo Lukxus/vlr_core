@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Gráfico de Atributo
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Gráfico de Atributo por Jogador</h2>
+    <form method="get" action="{% url 'grafico_atributo' %}">
+        <div class="form-row">
+            <div class="col">
+                <input type="text" name="nome_jogador" class="form-control" placeholder="Nome do Jogador" value="{{ nome_jogador }}">
+            </div>
+            <div class="col">
+                <input type="text" name="nome_time" class="form-control" placeholder="Nome do Time (opcional)" value="{{ nome_time }}">
+            </div>
+            <div class="col">
+                <select name="atributo" class="form-control">
+                    {% for atributo in atributos %}
+                    <option value="{{ atributo }}" {% if atributo == atributo_selecionado %}selected{% endif %}>{{ atributo }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-primary">Gerar Gráfico</button>
+            </div>
+        </div>
+    </form>
+    {% if grafico %}
+    <div class="mt-5">
+        <img src="{{ grafico }}" alt="Gráfico do Atributo" class="img-fluid">
+    </div>
+    {% elif error %}
+    <div class="mt-5 alert alert-danger">
+        {{ error }}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Bem-vindo à Plataforma de Análise de Equipes de Valorant</h2>
+    <p>Escolha uma das opções abaixo para navegar:</p>
+    <div class="list-group">
+        <a href="{% url 'lista_jogadores' %}" class="list-group-item list-group-item-action">
+            Lista de Jogadores
+        </a>
+        <a href="{% url 'grafico_atributo' %}" class="list-group-item list-group-item-action">
+            Gráfico de Atributo por Jogador
+        </a>
+    </div>
+</div>
+{% endblock %}

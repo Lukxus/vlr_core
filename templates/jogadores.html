@@ -1,113 +1,71 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Jogadores
+Lista de Jogadores
 {% endblock %}
 
 {% block content %}
-<h2>Jogadores</h2>
-
-<form method="GET" action="">
-    <input type="text" name="q" placeholder="Buscar jogador" value="{{ request.GET.q }}">
-    <input type="text" name="team" placeholder="Buscar time" value="{{ request.GET.team }}">
-    <button type="submit">Buscar</button>
-</form>
-
-<table class="player-table">
-    <thead>
-    <tr>
-        <th>Nome</th>
-        <th>Time</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for jogador in page_obj %}
-    <tr>
-        <td>{{ jogador.nome }}</td>
-        <td>{{ jogador.time.nome }}</td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
-
-<div class="pagination">
-    <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a class="page-link" href="?page=1&q={{ request.GET.q }}&team={{ request.GET.team }}">&laquo; first</a>
-            <a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ request.GET.q }}&team={{ request.GET.team }}">previous</a>
-        {% endif %}
-
-        <span class="current">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-        </span>
-
-        {% if page_obj.has_next %}
-            <a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ request.GET.q }}&team={{ request.GET.team }}">next</a>
-            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&q={{ request.GET.q }}&team={{ request.GET.team }}">last &raquo;</a>
-        {% endif %}
-    </span>
+<div class="container mt-5">
+    <h2>Jogadores</h2>
+    <form method="get" action="{% url 'lista_jogadores' %}">
+        <div class="form-row">
+            <div class="col">
+                <input type="text" name="q" class="form-control" placeholder="Buscar por nome" value="{{ query }}">
+            </div>
+            <div class="col">
+                <input type="text" name="team" class="form-control" placeholder="Buscar por time" value="{{ team_query }}">
+            </div>
+            <div class="col">
+                <select name="paginate_by" class="form-control">
+                    <option value="10" {% if paginate_by == "10" %}selected{% endif %}>10</option>
+                    <option value="30" {% if paginate_by == "30" %}selected{% endif %}>30</option>
+                    <option value="50" {% if paginate_by == "50" %}selected{% endif %}>50</option>
+                </select>
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+            </div>
+        </div>
+    </form>
+    <table class="table mt-3">
+        <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Time</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for jogador in page_obj %}
+        <tr>
+            <td>{{ jogador.nome }}</td>
+            <td>{{ jogador.time.nome }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="d-flex justify-content-between">
+        <div>
+            Mostrando {{ page_obj.start_index }} a {{ page_obj.end_index }} de {{ page_obj.paginator.count }} jogadores
+        </div>
+        <div>
+            <nav>
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}{% if team_query %}team={{ team_query }}&{% endif %}page={{ page_obj.previous_page_number }}&paginate_by={{ paginate_by }}">Anterior</a></li>
+                    {% endif %}
+                    {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item"><a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}{% if team_query %}team={{ team_query }}&{% endif %}page={{ num }}&paginate_by={{ paginate_by }}">{{ num }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}{% if team_query %}team={{ team_query }}&{% endif %}page={{ page_obj.next_page_number }}&paginate_by={{ paginate_by }}">Próxima</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
 </div>
-
-<style>
-    .pagination {
-        text-align: center;
-        margin-top: 20px;
-    }
-    .page-link {
-        color: #007BFF;
-        padding: 8px 16px;
-        text-decoration: none;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        margin: 0 2px;
-        transition: background-color 0.3s, color 0.3s;
-    }
-    .page-link:hover {
-        background-color: #007BFF;
-        color: white;
-    }
-    .current {
-        padding: 8px 16px;
-        margin: 0 2px;
-        border-radius: 5px;
-        background-color: #f4f4f4;
-        border: 1px solid #ddd;
-    }
-    form {
-        margin-bottom: 20px;
-    }
-    input[type="text"] {
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        width: calc(50% - 20px);
-        box-sizing: border-box;
-        margin-right: 10px;
-    }
-    button {
-        padding: 8px 16px;
-        border: none;
-        background-color: #007BFF;
-        color: white;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    button:hover {
-        background-color: #0056b3;
-    }
-    .player-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
-    .player-table th, .player-table td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-    }
-    .player-table th {
-        background-color: #007BFF;
-        color: white;
-    }
-</style>
 {% endblock %}

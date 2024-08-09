@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Detalhes do Time {{ time.nome }}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Detalhes do Time: {{ time.nome }}</h2>
+    <p><strong>Total de Partidas Jogadas:</strong> {{ total_partidas }}</p> <!-- Adicionado o total de partidas -->
+    <p><strong>Total de Vitórias:</strong> {{ total_vitorias }}</p>
+
+    <h3>Últimos 5 Times Adversários</h3>
+    <table class="table mt-3">
+        <thead>
+        <tr>
+            <th>Adversário</th>
+            <th>Data da Partida</th>
+            <th>Resultado</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for partida in partidas %}
+        <tr>
+            <td>{{ partida.sequencia_partida.time2.nome }}</td>
+            <td>{{ partida.sequencia_partida.data|date:"d/m/Y" }}</td>
+            <td>
+                {% if partida.time_vencedor == time %}
+                Vitória
+                {% else %}
+                Derrota
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'lista_times' %}" class="btn btn-secondary">Voltar para a lista de times</a>
+</div>
+{% endblock %}

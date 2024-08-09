@@ -1,4 +1,4 @@
-from ..models import Jogador
+from vlr_core.models import Jogador
 
 class JogadoresService:
     @staticmethod

@@ -17,8 +17,16 @@ Gráfico de Atributo
             </div>
             <div class="col">
                 <select name="atributo" class="form-control">
-                    {% for atributo in atributos %}
-                    <option value="{{ atributo }}" {% if atributo == atributo_selecionado %}selected{% endif %}>{{ atributo }}</option>
+                    {% for atributo, nome_amigavel in atributos %}
+                    <option value="{{ atributo }}" {% if atributo == atributo_selecionado %}selected{% endif %}>{{ nome_amigavel }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col">
+                <select name="agente" class="form-control">
+                    <option value="">Todos os Agentes</option>
+                    {% for agente in agentes %}
+                    <option value="{{ agente }}" {% if agente == agente_selecionado %}selected{% endif %}>{{ agente }}</option>
                     {% endfor %}
                 </select>
             </div>

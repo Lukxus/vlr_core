@@ -17,9 +17,9 @@ Lista de Jogadores
             </div>
             <div class="col">
                 <select name="paginate_by" class="form-control">
+                    <option value="5" {% if paginate_by == "5" %}selected{% endif %}>5</option>
                     <option value="10" {% if paginate_by == "10" %}selected{% endif %}>10</option>
-                    <option value="30" {% if paginate_by == "30" %}selected{% endif %}>30</option>
-                    <option value="50" {% if paginate_by == "50" %}selected{% endif %}>50</option>
+                    <option value="15" {% if paginate_by == "15" %}selected{% endif %}>15</option>
                 </select>
             </div>
             <div class="col">
@@ -43,6 +43,7 @@ Lista de Jogadores
         {% endfor %}
         </tbody>
     </table>
+
     <div class="d-flex justify-content-between">
         <div>
             Mostrando {{ page_obj.start_index }} a {{ page_obj.end_index }} de {{ page_obj.paginator.count }} jogadores

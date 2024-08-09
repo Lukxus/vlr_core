@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Lista de Times
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Times</h2>
+
+    <!-- Gráfico acima da barra de pesquisa -->
+    <div class="mt-3">
+        <h4>Top 10 Times com Mais Vitórias</h4>
+        <img src="{{ grafico }}" alt="Gráfico de Vitórias dos Times" class="img-fluid">
+    </div>
+
+    <!-- Barra de pesquisa -->
+    <form method="get" action="{% url 'lista_times' %}">
+        <div class="form-row mt-4">
+            <div class="col-md-8">
+                <input type="text" name="q" class="form-control" placeholder="Buscar por nome" value="{{ query }}">
+            </div>
+            <div class="col-md-4">
+                <select name="paginate_by" class="form-control">
+                    <option value="5" {% if paginate_by == "5" %}selected{% endif %}>5</option>
+                    <option value="10" {% if paginate_by == "10" %}selected{% endif %}>10</option>
+                    <option value="15" {% if paginate_by == "15" %}selected{% endif %}>15</option>
+                </select>
+            </div>
+        </div>
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </div>
+    </form>
+
+    <!-- Lista de times -->
+    <div class="mt-5">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Nome do Time</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for time in page_obj %}
+            <tr>
+                <td><a href="{% url 'detalhes_time' time.id %}">{{ time.nome }}</a></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-between">
+            <div>
+                Mostrando {{ page_obj.start_index }} a {{ page_obj.end_index }} de {{ page_obj.paginator.count }} times
+            </div>
+            <div>
+                <nav>
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}page={{ page_obj.previous_page_number }}&paginate_by={{ paginate_by }}">Anterior</a></li>
+                        {% endif %}
+                        {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item"><a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}page={{ num }}&paginate_by={{ paginate_by }}">{{ num }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}page={{ page_obj.next_page_number }}&paginate_by={{ paginate_by }}">Próxima</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Gráfico Radial de {{ jogador_nome }}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Gráfico Radial de Atributos - {{ jogador_nome }}</h2>
+
+    <form method="get" action="{% url 'grafico_radial' %}">
+        <div class="form-row">
+            <div class="col-md-6">
+                <input type="text" name="jogador_nome" class="form-control" placeholder="Nome do Jogador" value="{{ jogador_nome }}">
+            </div>
+            <div class="col-md-4">
+                <select name="categoria" class="form-control">
+                    <option value="geral" {% if categoria == 'geral' %}selected{% endif %}>Geral</option>
+                    <option value="ataque" {% if categoria == 'ataque' %}selected{% endif %}>Ataque</option>
+                    <option value="defesa" {% if categoria == 'defesa' %}selected{% endif %}>Defesa</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary btn-block">Gerar Gráfico</button>
+            </div>
+        </div>
+    </form>
+
+    {% if grafico_radial %}
+    <div class="mt-5">
+        <img src="{{ grafico_radial }}" alt="Gráfico Radial de Atributos" class="img-fluid">
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

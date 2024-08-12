@@ -5,18 +5,21 @@ Home
 {% endblock %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-5 text-center">
     <h2>Bem-vindo à Plataforma de Análise de Equipes de Valorant</h2>
-    <p>Escolha uma das opções abaixo para navegar:</p>
-    <div class="list-group">
+    <p class="lead mt-4">Escolha uma das opções abaixo para navegar:</p>
+    <div class="list-group mt-4">
         <a href="{% url 'lista_jogadores' %}" class="list-group-item list-group-item-action">
-            Lista de Jogadores
+            <strong>Lista de Jogadores</strong>
         </a>
         <a href="{% url 'grafico_atributo' %}" class="list-group-item list-group-item-action">
-            Gráfico de Atributo por Jogador
+            <strong>Gráfico de Atributo por Jogador</strong>
         </a>
         <a href="{% url 'lista_times' %}" class="list-group-item list-group-item-action">
-            Buscar Times
+            <strong>Buscar Times</strong>
+        </a>
+        <a href="{% url 'grafico_radial' %}" class="list-group-item list-group-item-action">
+            <strong>Gráfico Radial de Estatísticas</strong>
         </a>
     </div>
 </div>

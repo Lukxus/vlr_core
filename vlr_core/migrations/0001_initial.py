@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
                 ('mapa', models.CharField(db_column='mapa_partida', max_length=255, db_index=True)),
             ],
             options={
-                'db_table': 'partida',
+                'db_table': 'partidas',
             },
         ),
         migrations.CreateModel(
@@ -100,8 +100,8 @@ class Migration(migrations.Migration):
                 ('fkfd_geral', models.IntegerField(blank=True, db_column='fkfd_geral', null=True, db_index=True)),
                 ('jogador', models.ForeignKey(db_column='id_jogador', on_delete=django.db.models.deletion.CASCADE,
                                               to='vlr_core.jogador', db_index=True)),
-                ('partida', models.ForeignKey(db_column='id_partida', on_delete=django.db.models.deletion.CASCADE,
-                                              to='vlr_core.partida', db_index=True)),
+                ('partidas', models.ForeignKey(db_column='id_partida', on_delete=django.db.models.deletion.CASCADE,
+                                              to='vlr_core.partidas', db_index=True)),
             ],
             options={
                 'db_table': 'partida_jogador',
@@ -112,8 +112,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('lista_de_resultados', models.TextField(db_column='resultados_rounds')),
-                ('partida', models.ForeignKey(db_column='id_partida', on_delete=django.db.models.deletion.CASCADE,
-                                              to='vlr_core.partida', db_index=True)),
+                ('partidas', models.ForeignKey(db_column='id_partida', on_delete=django.db.models.deletion.CASCADE,
+                                              to='vlr_core.partidas', db_index=True)),
             ],
             options={
                 'db_table': 'rounds_partida',
@@ -139,13 +139,13 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.AddField(
-            model_name='partida',
+            model_name='partidas',
             name='sequencia_partida',
             field=models.ForeignKey(db_column='id_sequencia_partida', on_delete=django.db.models.deletion.CASCADE,
                                     to='vlr_core.sequenciapartida', db_index=True),
         ),
         migrations.AddField(
-            model_name='partida',
+            model_name='partidas',
             name='time_vencedor',
             field=models.ForeignKey(blank=True, db_column='id_time_vencedor', null=True,
                                     on_delete=django.db.models.deletion.SET_NULL, to='vlr_core.time', db_index=True),

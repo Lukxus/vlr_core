@@ -1,5 +1,5 @@
 from vlr_core.models import Jogador
-from vlr_core.services.jogador.atributos import ATTRIBUTOS_DE_PARA
+from vlr_core.jogador.atributos import ATTRIBUTOS_DE_PARA
 
 
 class JogadoresService:

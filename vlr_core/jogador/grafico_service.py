@@ -1,10 +1,10 @@
 import matplotlib
 
 from vlr_core.models import PartidaJogador
-from vlr_core.services.jogador.atributos import ATTRIBUTOS_DE_PARA
-from vlr_core.services.jogador.utils.GraficoDataFetcher import GraficoDataFetcher
-from vlr_core.services.jogador.utils.GraficoGenerator import GraficoGenerator
-from vlr_core.services.jogador.utils.GraficoInputValidator import GraficoInputValidator
+from vlr_core.jogador.atributos import ATTRIBUTOS_DE_PARA
+from vlr_core.jogador.utils.GraficoDataFetcher import GraficoDataFetcher
+from vlr_core.jogador.utils.GraficoGenerator import GraficoGenerator
+from vlr_core.jogador.utils.GraficoInputValidator import GraficoInputValidator
 
 matplotlib.use('Agg')
 

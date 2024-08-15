@@ -7,12 +7,19 @@ class Campeonato(models.Model):
     class Meta:
         unique_together = ('nome', 'especificacao')
         db_table = 'campeonato'
+        indexes = [
+            models.Index(fields=['nome']),
+            models.Index(fields=['especificacao']),
+        ]
 
 class Time(models.Model):
     nome = models.CharField(max_length=255, unique=True, db_column='nome_time')
 
     class Meta:
         db_table = 'time'
+        indexes = [
+            models.Index(fields=['nome']),
+        ]
 
 class SequenciaPartida(models.Model):
     campeonato = models.ForeignKey(Campeonato, on_delete=models.CASCADE, db_column='id_campeonato')
@@ -25,6 +32,12 @@ class SequenciaPartida(models.Model):
 
     class Meta:
         db_table = 'sequencia_partida'
+        indexes = [
+            models.Index(fields=['data']),
+            models.Index(fields=['campeonato']),
+            models.Index(fields=['time1']),
+            models.Index(fields=['time2']),
+        ]
 
 class Partida(models.Model):
     sequencia_partida = models.ForeignKey(SequenciaPartida, on_delete=models.CASCADE, db_column='id_sequencia_partida')
@@ -32,7 +45,12 @@ class Partida(models.Model):
     time_vencedor = models.ForeignKey(Time, on_delete=models.SET_NULL, null=True, blank=True, db_column='id_time_vencedor')
 
     class Meta:
-        db_table = 'partida'
+        db_table = 'partida'  # Nome da tabela alterado para 'partida'
+        indexes = [
+            models.Index(fields=['sequencia_partida']),
+            models.Index(fields=['mapa']),
+            models.Index(fields=['time_vencedor']),
+        ]
 
 class RoundsPartida(models.Model):
     partida = models.ForeignKey(Partida, on_delete=models.CASCADE, db_column='id_partida')
@@ -40,6 +58,9 @@ class RoundsPartida(models.Model):
 
     class Meta:
         db_table = 'rounds_partida'
+        indexes = [
+            models.Index(fields=['partida']),
+        ]
 
 class Jogador(models.Model):
     nome = models.CharField(max_length=255, db_column='nome_jogador')
@@ -48,6 +69,10 @@ class Jogador(models.Model):
     class Meta:
         unique_together = ('nome', 'time')
         db_table = 'jogador'
+        indexes = [
+            models.Index(fields=['nome']),
+            models.Index(fields=['time']),
+        ]
 
 class PartidaJogador(models.Model):
     partida = models.ForeignKey(Partida, on_delete=models.CASCADE, db_column='id_partida')
@@ -92,3 +117,8 @@ class PartidaJogador(models.Model):
 
     class Meta:
         db_table = 'partida_jogador'
+        indexes = [
+            models.Index(fields=['partida']),
+            models.Index(fields=['jogador']),
+            models.Index(fields=['agente']),
+        ]

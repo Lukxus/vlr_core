@@ -63,6 +63,11 @@
 1. **Subir o Docker Compose**:
    - Execute os comandos no terminal para subir o ambiente Docker.
 
+### Apagar info docker
+
+windows: docker ps -aq | ForEach-Object { docker rm -f $_ } ; docker images -aq | ForEach-Object { docker rmi -f $_ } ; docker volume ls -q | ForEach-Object { docker volume rm $_ }
+
+
 ## Parte 4: Gerenciamento dos Volumes e Zeragem da Base de Dados
 
 ### Configuração dos Volumes
@@ -118,4 +123,6 @@ admin
 
 ## Acessar o painel de admininstrador
 http://localhost:8000/admin/
+
+
 

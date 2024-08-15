@@ -36,3 +36,20 @@ ATTRIBUTOS_DE_PARA = {
     'fkfd_ataque': 'FK/FD no Ataque',
     'fkfd_geral': 'FK/FD Geral'
 }
+
+
+# Listas de campos separados por categoria
+CAMPOS_DEFESA = [
+    'r_defesa', 'acs_defesa', 'k_defesa', 'd_defesa', 'a_defesa', 'kda_defesa',
+    'kast_defesa', 'adr_defesa', 'hs_defesa', 'fk_defesa', 'fd_defesa', 'fkfd_defesa'
+]
+
+CAMPOS_ATAQUE = [
+    'r_ataque', 'acs_ataque', 'k_ataque', 'd_ataque', 'a_ataque', 'kda_ataque',
+    'kast_ataque', 'adr_ataque', 'hs_ataque', 'fk_ataque', 'fd_ataque', 'fkfd_ataque'
+]
+
+CAMPOS_GERAL = [
+    'r_geral', 'acs_geral', 'k_geral', 'd_geral', 'a_geral', 'kda_geral',
+    'kast_geral', 'adr_geral', 'hs_geral', 'fk_geral', 'fd_geral', 'fkfd_geral'
+]

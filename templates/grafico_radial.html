@@ -1,34 +1,43 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Gráfico Radial de {{ jogador_nome }}
+Gráfico Radial de Atributos
 {% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h2>Gráfico Radial de Atributos - {{ jogador_nome }}</h2>
+    <h2 class="text-center">Comparação de Atributos</h2>
 
     <form method="get" action="{% url 'grafico_radial' %}">
-        <div class="form-row">
-            <div class="col-md-6">
-                <input type="text" name="jogador_nome" class="form-control" placeholder="Nome do Jogador" value="{{ jogador_nome }}">
+        <div class="form-row align-items-center">
+            <div class="col-md-5 mb-2">
+                <input type="text" name="jogador_nome_1" class="form-control" placeholder="Nome do Jogador 1" value="{{ jogador_nome_1 }}" required>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5 mb-2">
+                <input type="text" name="jogador_nome_2" class="form-control" placeholder="Nome do Jogador 2 (opcional)" value="{{ jogador_nome_2 }}">
+            </div>
+            <div class="col-md-2 mb-2">
                 <select name="categoria" class="form-control">
                     <option value="geral" {% if categoria == 'geral' %}selected{% endif %}>Geral</option>
                     <option value="ataque" {% if categoria == 'ataque' %}selected{% endif %}>Ataque</option>
                     <option value="defesa" {% if categoria == 'defesa' %}selected{% endif %}>Defesa</option>
                 </select>
             </div>
-            <div class="col-md-2">
+        </div>
+        <div class="form-row justify-content-center">
+            <div class="col-md-3 mb-3">
                 <button type="submit" class="btn btn-primary btn-block">Gerar Gráfico</button>
             </div>
         </div>
     </form>
 
     {% if grafico_radial %}
-    <div class="mt-5">
+    <div class="mt-5 text-center">
         <img src="{{ grafico_radial }}" alt="Gráfico Radial de Atributos" class="img-fluid">
+    </div>
+    {% else %}
+    <div class="mt-5 text-center">
+        <p class="text-muted">Insira os nomes dos jogadores e selecione a categoria para gerar o gráfico comparativo.</p>
     </div>
     {% endif %}
 </div>

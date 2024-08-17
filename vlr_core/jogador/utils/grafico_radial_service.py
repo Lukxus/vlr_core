@@ -9,10 +9,11 @@ from utils.ATRIBUTOS import ATTRIBUTOS_DE_PARA
 from vlr_core.jogador.atributos import VALORES_MAXIMOS
 from vlr_core.jogador.repository.jogador_repository import JogadorRepository
 
+
 class GraficoRadialService:
 
     @staticmethod
-    def get_grafico_radial(jogador_nome_1, jogador_nome_2, categoria):
+    def get_grafico_radial(jogador_nome_1, jogador_nome_2=None, categoria=None):
         estatisticas_1 = JogadorRepository.get_estatisticas_jogador_por_nome(jogador_nome_1, categoria)
         estatisticas_2 = JogadorRepository.get_estatisticas_jogador_por_nome(jogador_nome_2, categoria) if jogador_nome_2 else None
 
@@ -34,8 +35,8 @@ class GraficoRadialService:
 
     @staticmethod
     def gerar_grafico_radial_comparativo(estatisticas_1, estatisticas_2, nome_jogador_1, nome_jogador_2):
-        labels, stats_1, stats_reais_1 = GraficoRadialService.preparar_dados_para_grafico(estatisticas_1)
-        _, stats_2, stats_reais_2 = GraficoRadialService.preparar_dados_para_grafico(estatisticas_2)
+        labels, stats_1, _ = GraficoRadialService.preparar_dados_para_grafico(estatisticas_1)
+        _, stats_2, _ = GraficoRadialService.preparar_dados_para_grafico(estatisticas_2)
 
         stats_1_normalizados = GraficoRadialService.normalizar_estatisticas(stats_1, labels)
         stats_2_normalizados = GraficoRadialService.normalizar_estatisticas(stats_2, labels)
@@ -43,8 +44,6 @@ class GraficoRadialService:
         angles = GraficoRadialService.calcular_angulos(len(labels))
         stats_1_normalizados += stats_1_normalizados[:1]
         stats_2_normalizados += stats_2_normalizados[:1]
-        stats_reais_1 += stats_reais_1[:1]
-        stats_reais_2 += stats_reais_2[:1]
         angles += angles[:1]
 
         fig, ax = GraficoRadialService.configurar_plot(angles, stats_1_normalizados, stats_2_normalizados)
@@ -52,28 +51,26 @@ class GraficoRadialService:
         GraficoRadialService.configurar_labels(ax, angles, labels)
         ax.set_title('Comparação de Estatísticas dos Jogadores', size=15, color='darkblue', weight='bold', pad=20)
 
-        GraficoRadialService.plotar_valores(ax, angles, stats_1_normalizados, stats_reais_1, color='blue', label=nome_jogador_1)
-        GraficoRadialService.plotar_valores(ax, angles, stats_2_normalizados, stats_reais_2, color='red', label=nome_jogador_2)
-
-        ax.legend(loc='upper right', bbox_to_anchor=(1.1, 1.1))
+        # Plotagem dos valores normalizados para cada jogador
+        GraficoRadialService.plotar_valores(ax, angles, stats_1_normalizados, color='blue', label=nome_jogador_1, offset_direction='left')
+        GraficoRadialService.plotar_valores(ax, angles, stats_2_normalizados, color='red', label=nome_jogador_2, offset_direction='right')
 
         return GraficoRadialService.renderizar_grafico(fig)
 
     @staticmethod
     def gerar_grafico_radial(estatisticas):
-        labels, stats, stats_reais = GraficoRadialService.preparar_dados_para_grafico(estatisticas)
+        labels, stats, _ = GraficoRadialService.preparar_dados_para_grafico(estatisticas)
 
         stats_normalizados = GraficoRadialService.normalizar_estatisticas(stats, labels)
 
         angles = GraficoRadialService.calcular_angulos(len(labels))
         stats_normalizados += stats_normalizados[:1]
-        stats_reais += stats_reais[:1]
         angles += angles[:1]
 
         fig, ax = GraficoRadialService.configurar_plot(angles, stats_normalizados)
 
         GraficoRadialService.configurar_labels(ax, angles, labels)
-        GraficoRadialService.plotar_valores(ax, angles, stats_normalizados, stats_reais, color='blue')
+        GraficoRadialService.plotar_valores(ax, angles, stats_normalizados, color='blue')
 
         return GraficoRadialService.renderizar_grafico(fig)
 
@@ -81,6 +78,10 @@ class GraficoRadialService:
     def preparar_dados_para_grafico(estatisticas):
         labels = [ATTRIBUTOS_DE_PARA[key] for key in estatisticas.keys()]
         stats = list(estatisticas.values())
+
+        if len(labels) != len(stats):
+            raise ValueError("O número de labels não corresponde ao número de estatísticas.")
+
         return labels, stats, stats
 
     @staticmethod
@@ -94,11 +95,10 @@ class GraficoRadialService:
                 raise ValueError(f"Valor máximo inválido para {atributo_original}. Verifique VALORES_MAXIMOS.")
 
             stat_normalizado = stat / max_valor
-
-            if stat_normalizado < 0 or stat_normalizado > 1:
-                raise ValueError(f"Estatística {atributo_original} fora do intervalo após normalização: {stat_normalizado}")
-
             stats_normalizados.append(stat_normalizado)
+
+        if len(stats_normalizados) != len(labels):
+            raise ValueError("Após normalização, o número de estatísticas normalizadas não corresponde ao número de labels.")
 
         return stats_normalizados
 
@@ -124,6 +124,8 @@ class GraficoRadialService:
         ax.spines['polar'].set_visible(False)
         ax.grid(color='gray', linestyle='--', linewidth=0.5)
 
+        ax.set_yticklabels([])
+
         return fig, ax
 
     @staticmethod
@@ -133,11 +135,18 @@ class GraficoRadialService:
         ax.set_xticklabels(labels, size=12, color='darkblue', fontweight='bold')
 
     @staticmethod
-    def plotar_valores(ax, angles, stats_normalizados, stats_reais, color, label=None):
-        ax.fill(angles, stats_normalizados, color=color, alpha=0.4)
-        ax.plot(angles, stats_normalizados, color=color, linewidth=2, label=label)
-        for angle, stat_normalizado, stat_real in zip(angles[:-1], stats_normalizados[:-1], stats_reais[:-1]):
-            ax.text(angle, stat_normalizado + 0.05, f'{stat_real:.2f}', color=color, ha='center', va='center', fontsize=10)
+    def plotar_valores(ax, angles, stats, color, label=None, offset_direction='left'):
+        for angle, stat in zip(angles[:-1], stats[:-1]):
+            ha = 'center'
+            x_offset = 0
+            if offset_direction == 'left':
+                ha = 'right'
+                x_offset = -0.1
+            elif offset_direction == 'right':
+                ha = 'left'
+                x_offset = 0.1
+
+            ax.text(angle + x_offset, stat + 0.05, f'{stat:.2f}', color=color, ha=ha, va='center', fontsize=10)
 
         if label:
             ax.legend(loc='upper right', bbox_to_anchor=(1.1, 1.1))

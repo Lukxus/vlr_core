@@ -96,49 +96,51 @@ ATTRIBUTOS_DE_PARA = {
 ATRIBUTOS_DEFESA = [
     'r_defesa', 'acs_defesa', 'k_defesa', 'd_defesa', 'a_defesa',
     'kast_defesa', 'adr_defesa', 'hs_defesa',
-    'fk_defesa', 'fd_defesa', 'fkfd_defesa'
+    'fk_defesa', 'fd_defesa'
 ]
 
 ATRIBUTOS_ATAQUE = [
     'r_ataque', 'acs_ataque', 'k_ataque', 'd_ataque', 'a_ataque',
     'kast_ataque', 'adr_ataque', 'hs_ataque',
-    'fk_ataque', 'fd_ataque', 'fkfd_ataque'
+    'fk_ataque', 'fd_ataque'
 ]
 
 ATRIBUTOS_GERAL = [
     'r_geral', 'acs_geral', 'k_geral', 'd_geral', 'a_geral',
     'kast_geral', 'adr_geral', 'hs_geral',
-    'fk_geral', 'fd_geral', 'fkfd_geral'
+    'fk_geral', 'fd_geral'
 ]
 
 VALORES_MAXIMOS = {
-    'r_defesa': 100,
-    'r_ataque': 100,
-    'r_geral': 100,
-    'acs_defesa': 300,
-    'acs_ataque': 300,
-    'acs_geral': 300,
-    'k_defesa': 30,
-    'k_ataque': 30,
-    'k_geral': 1000,  # Aumentando o valor máximo de k_geral para refletir melhor os dados
-    'd_defesa': 30,
-    'd_ataque': 30,
-    'd_geral': 30,
-    'a_defesa': 20,
-    'a_ataque': 20,
-    'a_geral': 20,
+    'r_defesa': 5,
+    'r_ataque': 5,
+    'r_geral': 5,
+    'acs_defesa': 5,
+    'acs_ataque': 5,
+    'acs_geral': 5,
+    'k_defesa': 40,
+    'k_ataque': 40,
+    'k_geral': 40,  # Aumentando o valor máximo de k_geral para refletir melhor os dados
+    'd_defesa': 40,
+    'd_ataque': 40,
+    'd_geral': 40,
+    'a_defesa': 10,
+    'a_ataque': 10,
+    'a_geral': 10,
     'kda_geral': 10,
-    'adr_defesa': 300,
-    'adr_ataque': 300,
-    'adr_geral': 300,
-    'hs_defesa': 100,
-    'hs_ataque': 100,
-    'hs_geral': 1009,
-    'fk_defesa': 10,
-    'fk_ataque': 10,
-    'fk_geral': 1000,
-    'fd_defesa': 10,
-    'fd_ataque': 10,
-    'fd_geral': 1000,
-    'fkfd_geral': 300,
+    'kda_ataque': 10,
+    'kda_defesa': 10,
+    'adr_defesa': 5,
+    'adr_ataque': 5,
+    'adr_geral': 5,
+    'hs_defesa': 40,
+    'hs_ataque': 40,
+    'hs_geral': 40,
+    'fk_defesa': 5,
+    'fk_ataque': 5,
+    'fk_geral': 5,
+    'fd_defesa': 5,
+    'fd_ataque': 5,
+    'fd_geral': 5,
+    'fkfd_geral': 40,
 }

@@ -126,12 +126,14 @@ class GraficoRadialView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        jogador_nome = self.request.GET.get('jogador_nome')
+        jogador_nome_1 = self.request.GET.get('jogador_nome_1')
+        jogador_nome_2 = self.request.GET.get('jogador_nome_2')
         categoria = self.request.GET.get('categoria', 'geral')
 
-        if jogador_nome:
-            context['grafico_radial'] = GraficoRadialService.get_grafico_radial(jogador_nome, categoria)
-            context['jogador_nome'] = jogador_nome
+        if jogador_nome_1:
+            context['grafico_radial'] = GraficoRadialService.get_grafico_radial(jogador_nome_1, jogador_nome_2, categoria)
+            context['jogador_nome_1'] = jogador_nome_1
+            context['jogador_nome_2'] = jogador_nome_2
             context['categoria'] = categoria
 
         return context

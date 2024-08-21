@@ -26,8 +26,8 @@ class JogadorRepository:
 
     @staticmethod
     def get_estatisticas_jogador_por_nome(jogador_nome, categoria):
-        jogador = Jogador.objects.filter(nome__iexact=jogador_nome).first()
-        if not jogador:
+        jogadores = Jogador.objects.filter(nome__iexact=jogador_nome)
+        if not jogadores.exists():
             return None
 
         # Escolhe a lista de campos com base na categoria
@@ -43,9 +43,11 @@ class JogadorRepository:
             campo: Avg(campo) for campo in campos
         }
 
-        print(f"Campos a serem agregados: {fields_to_aggregate}")  # Debug
-
-        estatisticas = PartidaJogador.objects.filter(jogador=jogador).aggregate(**fields_to_aggregate)
+        # Agrega as estatísticas para todos os registros dos jogadores encontrados
+        estatisticas = PartidaJogador.objects.filter(jogador__in=jogadores).aggregate(**fields_to_aggregate)
         print(f"Estatísticas agregadas: {estatisticas}")  # Debug
+
+        # Substitui None por 0 nos valores do dicionário de estatísticas
+        estatisticas = {campo: valor if valor is not None else 0 for campo, valor in estatisticas.items()}
 
         return estatisticas

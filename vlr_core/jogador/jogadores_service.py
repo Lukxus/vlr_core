@@ -30,7 +30,7 @@ class JogadoresService:
         except Jogador.DoesNotExist:
             return None
 
-    staticmethod
+    @staticmethod
     def get_estatisticas_jogador_por_nome(nome):
         jogadores = Jogador.objects.filter(nome__iexact=nome)
 

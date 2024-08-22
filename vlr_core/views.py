@@ -131,7 +131,11 @@ class GraficoRadialView(TemplateView):
         categoria = self.request.GET.get('categoria', 'geral')
 
         if jogador_nome_1:
-            context['grafico_radial'] = GraficoRadialService.get_grafico_radial(jogador_nome_1, jogador_nome_2, categoria)
+            # Crie uma instância de GraficoRadialService
+            grafico_radial_service = GraficoRadialService()
+
+            # Utilize a instância para chamar o método get_grafico_radial
+            context['grafico_radial'] = grafico_radial_service.get_grafico_radial(jogador_nome_1, jogador_nome_2, categoria)
             context['jogador_nome_1'] = jogador_nome_1
             context['jogador_nome_2'] = jogador_nome_2
             context['categoria'] = categoria

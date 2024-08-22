@@ -1,5 +1,8 @@
+from django.db.models import Max
+
 from vlr_core.jogador.atributos import ATTRIBUTOS_DE_PARA
 from vlr_core.jogador.repository.jogador_repository import JogadorRepository
+from vlr_core.models import PartidaJogador
 
 
 class JogadoresService:
@@ -46,3 +49,44 @@ class JogadoresService:
             del dicionario[chave]
 
         return dicionario
+
+    @staticmethod
+    def obter_valores_maximos():
+        return PartidaJogador.objects.aggregate(
+            r_defesa=Max('r_defesa'),
+            r_ataque=Max('r_ataque'),
+            r_geral=Max('r_geral'),
+            acs_defesa=Max('acs_defesa'),
+            acs_ataque=Max('acs_ataque'),
+            acs_geral=Max('acs_geral'),
+            k_defesa=Max('k_defesa'),
+            k_ataque=Max('k_ataque'),
+            k_geral=Max('k_geral'),
+            d_defesa=Max('d_defesa'),
+            d_ataque=Max('d_ataque'),
+            d_geral=Max('d_geral'),
+            a_defesa=Max('a_defesa'),
+            a_ataque=Max('a_ataque'),
+            a_geral=Max('a_geral'),
+            kda_defesa=Max('kda_defesa'),
+            kda_ataque=Max('kda_ataque'),
+            kda_geral=Max('kda_geral'),
+            kast_defesa=Max('kast_defesa'),
+            kast_ataque=Max('kast_ataque'),
+            kast_geral=Max('kast_geral'),
+            adr_defesa=Max('adr_defesa'),
+            adr_ataque=Max('adr_ataque'),
+            adr_geral=Max('adr_geral'),
+            hs_defesa=Max('hs_defesa'),
+            hs_ataque=Max('hs_ataque'),
+            hs_geral=Max('hs_geral'),
+            fk_defesa=Max('fk_defesa'),
+            fk_ataque=Max('fk_ataque'),
+            fk_geral=Max('fk_geral'),
+            fd_defesa=Max('fd_defesa'),
+            fd_ataque=Max('fd_ataque'),
+            fd_geral=Max('fd_geral'),
+            fkfd_defesa=Max('fkfd_defesa'),
+            fkfd_ataque=Max('fkfd_ataque'),
+            fkfd_geral=Max('fkfd_geral'),
+        )

@@ -6,43 +6,47 @@ Gráfico de Atributo
 
 {% block content %}
 <div class="container mt-5">
-    <h2>Gráfico de Atributo por Jogador</h2>
-    <form method="get" action="{% url 'grafico_atributo' %}">
-        <div class="form-row">
-            <div class="col">
-                <input type="text" name="nome_jogador" class="form-control" placeholder="Nome do Jogador" value="{{ nome_jogador }}">
-            </div>
-            <div class="col">
-                <input type="text" name="nome_time" class="form-control" placeholder="Nome do Time (opcional)" value="{{ nome_time }}">
-            </div>
-            <div class="col">
-                <select name="atributo" class="form-control">
-                    {% for atributo, nome_amigavel in atributos %}
-                    <option value="{{ atributo }}" {% if atributo == atributo_selecionado %}selected{% endif %}>{{ nome_amigavel }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col">
-                <select name="agente" class="form-control">
-                    <option value="">Todos os Agentes</option>
-                    {% for agente in agentes %}
-                    <option value="{{ agente }}" {% if agente == agente_selecionado %}selected{% endif %}>{{ agente }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col">
-                <button type="submit" class="btn btn-primary">Gerar Gráfico</button>
-            </div>
+    <h2>Gráfico de Atributo do Jogador</h2>
+    <form method="get" class="form-inline my-3 row">
+        <div class="col-md-3 mb-2">
+            <input type="text" name="nome" class="form-control" placeholder="Nome do Jogador" required>
+        </div>
+        <div class="col-md-3 mb-2">
+            <input type="text" name="nome_time" class="form-control" placeholder="Nome do Time (opcional)">
+        </div>
+        <div class="col-md-3 mb-2">
+            <select name="atributo" class="form-control" required>
+                <option value="">Escolha um atributo</option>
+                <option value="r_defesa">R Defesa</option>
+                <option value="r_ataque">R Ataque</option>
+                <option value="r_geral">R Geral</option>
+                <!-- Adicione outras opções de atributos conforme necessário -->
+            </select>
+        </div>
+        <div class="col-md-3 mb-2">
+            <select name="agente" class="form-control">
+                <option value="">Todos os Agentes</option>
+                {% for agente in agentes %}
+                <option value="{{ agente }}">{{ agente }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-12 text-center">
+            <button type="submit" class="btn btn-primary">Gerar Gráfico</button>
         </div>
     </form>
-    {% if grafico %}
-    <div class="mt-5">
-        <img src="{{ grafico }}" alt="Gráfico do Atributo" class="img-fluid">
-    </div>
-    {% elif error %}
-    <div class="mt-5 alert alert-danger">
-        {{ error }}
-    </div>
+
+    {% if bokeh_script and bokeh_div %}
+        <!-- Inclua os arquivos CSS e JS do Bokeh -->
+        <link rel="stylesheet" href="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.0.min.css" type="text/css">
+        <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.0.min.js"></script>
+
+        <div class="mt-5">
+            {{ bokeh_script|safe }}
+            {{ bokeh_div|safe }}
+        </div>
+    {% elif error_message %}
+        <div class="alert alert-warning mt-5">{{ error_message }}</div>
     {% endif %}
 </div>
 {% endblock %}

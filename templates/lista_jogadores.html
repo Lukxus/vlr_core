@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Lista de Jogadores
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Lista de Jogadores</h2>
+    <form method="get" class="form-inline my-3">
+        <input type="text" name="nome" class="form-control mr-2 mb-2" placeholder="Buscar por nome">
+        <input type="text" name="nome_time" class="form-control mr-2 mb-2" placeholder="Buscar por nome do time">
+        <button type="submit" class="btn btn-primary mb-2">Buscar</button>
+    </form>
+
+    <form method="get" class="form-inline mb-3">
+        <label for="page_size" class="mr-2">Tamanho da Página:</label>
+        <select name="page_size" id="page_size" class="form-control ml-2" onchange="this.form.submit()">
+            <option value="5" {% if page_size == 5 %}selected{% endif %}>5</option>
+            <option value="10" {% if page_size == 10 %}selected{% endif %}>10</option>
+            <option value="15" {% if page_size == 15 %}selected{% endif %}>15</option>
+        </select>
+    </form>
+
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Nome do Jogador</th>
+                <th>Nome do Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for jogador in jogadores %}
+            <tr>
+                <td>{{ jogador.nome }}</td>
+                <td>{{ jogador.time.nome }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination mt-4 justify-content-center">
+            {% if jogadores.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ jogadores.previous_page_number }}&page_size={{ page_size }}{% if nome %}&nome={{ nome }}{% endif %}{% if nome_time %}&nome_time={{ nome_time }}{% endif %}">Anterior</a>
+            </li>
+            {% endif %}
+
+            {% for num in jogadores.paginator.page_range %}
+                {% if num >= jogadores.number|add:'-2' and num <= jogadores.number|add:'2' %}
+                <li class="page-item {% if jogadores.number == num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}&page_size={{ page_size }}{% if nome %}&nome={{ nome }}{% endif %}{% if nome_time %}&nome_time={{ nome_time }}{% endif %}">{{ num }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if jogadores.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ jogadores.next_page_number }}&page_size={{ page_size }}{% if nome %}&nome={{ nome }}{% endif %}{% if nome_time %}&nome_time={{ nome_time }}{% endif %}">Próxima</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}

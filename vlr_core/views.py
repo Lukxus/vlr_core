@@ -1,139 +1,90 @@
-import base64
-import io
-import urllib
+from datetime import datetime
 
-import numpy as np
-import seaborn as sns
-from django.core.paginator import Paginator
-from django.db.models import F, Count, Q
-from django.shortcuts import render
-from django.views.generic import TemplateView, ListView, DetailView
-from matplotlib import pyplot as plt
+from bokeh.embed import components
+from bokeh.models import HoverTool, ColumnDataSource
+from bokeh.plotting import figure
+from django.views.generic import TemplateView, ListView
 
-from vlr_core.jogador.atributos import ATTRIBUTOS_DE_PARA
-from vlr_core.jogador.grafico_service import GraficoService
-from vlr_core.jogador.jogadores_service import JogadoresService
-from vlr_core.jogador.utils.grafico_radial_service import GraficoRadialService
-from vlr_core.models import Time
-from vlr_core.partidas.service.partida_service import PartidaService
-from vlr_core.times.service.time_service import TimeService
+from vlr_core.jogador.JogadorService import JogadorService
 
 
 class HomeView(TemplateView):
     template_name = "home.html"
 
 
-class ListaJogadoresView(ListView):
-    template_name = "jogadores.html"
-    context_object_name = "page_obj"
 
-    def get_queryset(self):
-        query = self.request.GET.get('q', '')
-        team_query = self.request.GET.get('team', '')
-        return JogadoresService.get_jogadores(query, team_query)
+class ListaJogadoresView(TemplateView):
+    template_name = 'lista_jogadores.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        paginate_by = int(self.request.GET.get('paginate_by', 5))
+        nome = self.request.GET.get('nome')
+        nome_time = self.request.GET.get('nome_time')
+        page = self.request.GET.get('page', 1)
+        page_size = self.request.GET.get('page_size', 10)
 
-        jogadores_list = self.get_queryset()
-        paginator = Paginator(jogadores_list, paginate_by)
-        page = self.request.GET.get('page')
+        service = JogadorService()
+        jogadores = service.listar_jogadores(nome, nome_time, page, page_size)
 
-        context.update({
-            'page_obj': paginator.get_page(page),
-            'query': self.request.GET.get('q', ''),
-            'team_query': self.request.GET.get('team', ''),
-            'paginate_by': paginate_by,
-        })
+        context['jogadores'] = jogadores
+        context['page_size'] = page_size
         return context
 
 
-def grafico_atributo(request):
-    context = GraficoService().get_grafico_context(request)
-    return render(request, 'grafico_atributo.html', context)
-
-
-class ListaTimesView(ListView):
-    template_name = "times.html"
-    context_object_name = "page_obj"
-
-    def get_queryset(self):
-        query = self.request.GET.get('q', '')
-        return TimeService.get_times(query)  # Agora usando o TimeService para obter os times com vitórias anotadas
+class GraficoAtributoView(TemplateView):
+    template_name = 'grafico_atributo.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        paginate_by = int(self.request.GET.get('paginate_by', 5))
+        nome = self.request.GET.get('nome')
+        atributo = self.request.GET.get('atributo')
+        nome_time = self.request.GET.get('nome_time')
+        agente = self.request.GET.get('agente')
 
-        times_list = self.get_queryset()
-        page = self.request.GET.get('page')
+        service = JogadorService()
+        context['agentes'] = service.listar_agentes()
 
-        context.update({
-            'page_obj': TimeService.paginate_times(times_list, paginate_by, page),
-            'query': self.request.GET.get('q', ''),
-            'paginate_by': paginate_by,
-            'grafico': self.gerar_histograma(times_list[:10]),  # Gere o gráfico com base nos 10 times com mais vitórias
-        })
-        return context
+        if nome and atributo:
+            try:
+                dados = service.buscar_dados_para_grafico(nome, atributo, nome_time, agente)
 
-    def gerar_histograma(self, top_10_times):
-        vitorias = [time.vitorias for time in top_10_times]
-        nomes = [time.nome for time in top_10_times]
+                if dados:
+                    # Separar datas e valores
+                    datas, valores = zip(*dados)
+                    source = ColumnDataSource(data={'x': datas, 'y': valores})
 
-        plt.figure(figsize=(12, 6))
-        sns.barplot(x=nomes, y=vitorias, palette="Blues_d", hue=nomes, legend=False)
+                    # Configurar o gráfico
+                    p = figure(
+                        x_axis_type="datetime",
+                        title=f"Evolução do {atributo}",
+                        height=350,
+                        width=800,
+                        tools="pan,wheel_zoom,box_zoom,reset"
+                    )
 
-        plt.xlabel('Times', fontsize=14)
-        plt.ylabel('Número de Vitórias', fontsize=14)
-        plt.title('Distribuição de Vitórias dos Top 10 Times', fontsize=16)
+                    # Adicionar linha e pontos com hover
+                    p.line('x', 'y', source=source, line_width=2, legend_label=f"{atributo}", color="navy")
+                    p.circle('x', 'y', source=source, size=8, color="red", alpha=0.5)
 
-        plt.xticks(rotation=45, ha='right', fontsize=12)
-        plt.yticks(fontsize=12)
-        plt.tight_layout()
+                    # Configurar ferramenta de hover
+                    hover = HoverTool(tooltips=[("Data", "@x{%F}"), ("Valor", "@y")], formatters={'@x': 'datetime'})
+                    p.add_tools(hover)
 
-        buf = io.BytesIO()
-        plt.savefig(buf, format='png')
-        plt.close()
-        buf.seek(0)
-        string = base64.b64encode(buf.read())
-        return 'data:image/png;base64,' + urllib.parse.quote(string)
+                    # Estilização adicional
+                    p.title.text_font_size = "16pt"
+                    p.xaxis.axis_label = "Data"
+                    p.yaxis.axis_label = "Valor"
+                    p.legend.location = "top_left"
 
-
-class TimeDetalhesView(DetailView):
-    model = Time
-    template_name = "time_detalhes.html"
-    context_object_name = "time"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        time = self.get_object()
-
-        ultimas_partidas = PartidaService.get_ultimas_partidas(time)
-        total_vitorias = PartidaService.get_total_vitorias(time)
-        total_partidas = PartidaService.get_total_partidas(time)
-
-        context.update({
-            'partidas': ultimas_partidas,
-            'total_vitorias': total_vitorias,
-            'total_partidas': total_partidas,
-        })
-        return context
-
-
-class GraficoRadialView(TemplateView):
-    template_name = "grafico_radial.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        jogador_nome_1 = self.request.GET.get('jogador_nome_1')
-        jogador_nome_2 = self.request.GET.get('jogador_nome_2')
-        categoria = self.request.GET.get('categoria', 'geral')
-
-        if jogador_nome_1:
-            context['grafico_radial'] = GraficoRadialService.get_grafico_radial(jogador_nome_1, jogador_nome_2, categoria)
-            context['jogador_nome_1'] = jogador_nome_1
-            context['jogador_nome_2'] = jogador_nome_2
-            context['categoria'] = categoria
+                    # Renderizar os componentes Bokeh
+                    script, div = components(p)
+                    context['bokeh_script'] = script
+                    context['bokeh_div'] = div
+                else:
+                    context['error_message'] = "Nenhum dado encontrado para a combinação de filtros aplicada."
+            except Exception as e:
+                context['error_message'] = f"Ocorreu um erro ao buscar os dados: {str(e)}"
+        else:
+            context['error_message'] = "Os filtros 'nome' e 'atributo' são obrigatórios."
 
         return context

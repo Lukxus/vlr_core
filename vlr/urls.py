@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path
 
 from vlr_core.views import (
-    HomeView, ListaJogadoresView, GraficoAtributoView, ListaTimesView, DetalhesTimeView,
+    HomeView, ListaJogadoresView, GraficoAtributoView, ListaTimesView, DetalhesTimeView, CompararJogadoresView,
 
 )
 
@@ -14,5 +14,6 @@ urlpatterns = [
     path('grafico/', GraficoAtributoView.as_view(), name='grafico_atributo'),
     path('times/', ListaTimesView.as_view(), name='lista_times'),
     path('times/<int:id>/', DetalhesTimeView.as_view(), name='detalhes_time'),
-]
+    path('comparar_jogadores/', CompararJogadoresView.as_view(), name='comparar_jogadores'),
 
+]

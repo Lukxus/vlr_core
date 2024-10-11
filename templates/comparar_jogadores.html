@@ -1,31 +1,36 @@
-<form method="get">
-    <label for="nome_jogador1">Nome do Jogador 1:</label>
-    <input type="text" id="nome_jogador1" name="nome_jogador1">
+{% extends "base.html" %}
 
-    <label for="nome_jogador2">Nome do Jogador 2:</label>
-    <input type="text" id="nome_jogador2" name="nome_jogador2">
+{% block content %}
+<h2>Comparar Jogadores</h2>
+<form method="post">
+    {% csrf_token %}
+    <label for="jogador1">Jogador 1:</label>
+    <input type="text" name="jogador1" id="jogador1" value="{{ jogador1_nome|default:'' }}">
 
-    <label for="agente">Agente:</label>
-    <select id="agente" name="agente">
-        <option value="">Todos</option>
-        {% for agente in agentes %}
-            <option value="{{ agente }}">{{ agente }}</option>
-        {% endfor %}
+    <label for="jogador2">Jogador 2:</label>
+    <input type="text" name="jogador2" id="jogador2" value="{{ jogador2_nome|default:'' }}">
+
+    <label for="categoria">Categoria:</label>
+    <select name="categoria" id="categoria">
+        <option value="geral" {% if categoria == "geral" %}selected{% endif %}>Geral</option>
+        <option value="ataque" {% if categoria == "ataque" %}selected{% endif %}>Ataque</option>
+        <option value="defesa" {% if categoria == "defesa" %}selected{% endif %}>Defesa</option>
     </select>
 
-    <label for="tipo_atributo">Tipo de Atributo:</label>
-    <select id="tipo_atributo" name="tipo_atributo">
-        {% for tipo in tipos_atributos %}
-            <option value="{{ tipo }}">{{ tipo }}</option>
-        {% endfor %}
-    </select>
-
-    <button type="submit">Comparar</button>
+    <button type="submit">Gerar Gráfico</button>
 </form>
 
 {% if bokeh_script and bokeh_div %}
-    {{ bokeh_script | safe }}
-    {{ bokeh_div | safe }}
-{% elif error_message %}
-    <p>{{ error_message }}</p>
+    <!-- Incluir os recursos CSS e JS do Bokeh -->
+    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.0.min.js"></script>
+    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.6.0.min.js"></script>
+    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.6.0.min.js"></script>
+
+    {{ bokeh_script|safe }}
+    {{ bokeh_div|safe }}
 {% endif %}
+
+{% if error_message %}
+    <p style="color: red;">{{ error_message }}</p>
+{% endif %}
+{% endblock %}

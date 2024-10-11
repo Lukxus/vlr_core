@@ -1,6 +1,8 @@
 from django.core.paginator import Paginator
+from django.db.models import Avg
 
 from vlr_core.jogador.JogadorRepository import JogadorRepository
+from vlr_core.models import Jogador, PartidaJogador
 from vlr_core.partida_jogador.PartidaJogadorService import PartidaJogadorService
 
 
@@ -46,11 +48,29 @@ class JogadorService:
         """
         return self.partida_jogador_service.listar_agentes()
 
-    def get_dados_atributo(self, nome_jogador, nome_time, atributo):
-        """
-        Busca e retorna os dados de um atributo específico para um jogador em um time.
-        """
-        if not nome_jogador or not nome_time or not atributo:
-            return []
+    def obter_dados_para_comparacao(self, nome_jogador, categoria):
+        try:
+            jogadores = Jogador.objects.filter(nome=nome_jogador)
+            if not jogadores.exists():
+                return None
 
-        return self.repository.get_atributo_data(nome_jogador, nome_time, atributo)
+            atributos = ['acs', 'kda', 'adr', 'hs', 'kast']
+            dados = {}
+
+            for atributo in atributos:
+                campo = f"{atributo}_{categoria}"
+                # Obter todas as partidas dos jogadores com o nome fornecido
+                partidas_jogador = PartidaJogador.objects.filter(jogador__in=jogadores)
+                # Calcular a média do atributo nas partidas
+                media = partidas_jogador.aggregate(media_atributo=Avg(campo))['media_atributo']
+                if media is not None:
+                    dados[atributo.upper()] = media
+                else:
+                    dados[atributo.upper()] = 0  # Trate conforme necessário
+
+            return dados
+        except Exception as e:
+            print(f"Erro ao obter dados para comparação: {e}")
+            return None
+
+

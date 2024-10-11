@@ -4,6 +4,10 @@
 Gráfico de Atributo
 {% endblock %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.0.min.css" type="text/css">
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
     <h2>Gráfico de Atributo do Jogador</h2>
@@ -17,10 +21,9 @@ Gráfico de Atributo
         <div class="col-md-3 mb-2">
             <select name="atributo" class="form-control" required>
                 <option value="">Escolha um atributo</option>
-                <option value="r_defesa">R Defesa</option>
-                <option value="r_ataque">R Ataque</option>
-                <option value="r_geral">R Geral</option>
-                <!-- Adicione outras opções de atributos conforme necessário -->
+                {% for valor, descricao in atributos %}
+                <option value="{{ valor }}">{{ descricao }}</option>
+                {% endfor %}
             </select>
         </div>
         <div class="col-md-3 mb-2">
@@ -37,10 +40,6 @@ Gráfico de Atributo
     </form>
 
     {% if bokeh_script and bokeh_div %}
-        <!-- Inclua os arquivos CSS e JS do Bokeh -->
-        <link rel="stylesheet" href="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.0.min.css" type="text/css">
-        <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.0.min.js"></script>
-
         <div class="mt-5">
             {{ bokeh_script|safe }}
             {{ bokeh_div|safe }}
@@ -49,4 +48,11 @@ Gráfico de Atributo
         <div class="alert alert-warning mt-5">{{ error_message }}</div>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.0.min.js"></script>
+    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.6.0.min.js"></script>
+    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.6.0.min.js"></script>
+    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-api-3.6.0.min.js"></script>
 {% endblock %}

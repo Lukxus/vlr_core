@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Lista de Times
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Lista de Times</h2>
+    <form method="get" class="form-inline mb-3">
+        <input type="text" name="nome" class="form-control mr-2" placeholder="Nome do Time">
+        <select name="page_size" class="form-control mr-2">
+            <option value="5">5 por página</option>
+            <option value="10" selected>10 por página</option>
+            <option value="15">15 por página</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+    </form>
+
+    <div>
+        {{ bokeh_script|safe }}
+        {{ bokeh_div|safe }}
+    </div>
+
+    <table class="table mt-5">
+        <thead>
+            <tr>
+                <th>Nome do Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for time in times %}
+            <tr>
+                <td><a href="{% url 'detalhes_time' time.id %}">{{ time.nome }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <nav>
+        <ul class="pagination">
+            {% if times.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ times.previous_page_number }}&page_size={{ times.paginator.per_page }}">Anterior</a></li>
+            {% endif %}
+            {% if times.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ times.next_page_number }}&page_size={{ times.paginator.per_page }}">Próxima</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}

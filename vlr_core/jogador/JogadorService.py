@@ -9,6 +9,21 @@ class JogadorService:
         self.repository = JogadorRepository()
         self.partida_jogador_service = PartidaJogadorService()
 
+    def listar_jogadores(self, nome=None, nome_time=None, page=1, page_size=10):
+        """
+        Lista jogadores com filtros opcionais para nome e time.
+        Paginação é aplicada com base nos parâmetros page e page_size.
+        """
+        if nome:
+            jogadores = self.repository.search_by_name(nome)
+        elif nome_time:
+            jogadores = self.repository.search_by_team(nome_time)
+        else:
+            jogadores = self.repository.get_all_jogadores()
+
+        paginator = Paginator(jogadores.order_by('nome'), page_size)
+        return paginator.get_page(page)
+
     def buscar_dados_para_grafico(self, nome, atributo, nome_time=None, agente=None):
         if nome_time:
             jogadores = self.repository.get_jogador_by_name_and_team(nome, nome_time)
@@ -26,22 +41,16 @@ class JogadorService:
         return dados if dados else None
 
     def listar_agentes(self):
+        """
+        Lista todos os agentes disponíveis na base de dados.
+        """
         return self.partida_jogador_service.listar_agentes()
 
-    def listar_jogadores(self, nome=None, nome_time=None, page=1, page_size=10):
-        if nome:
-            jogadores = self.repository.search_by_name(nome)
-        elif nome_time:
-            jogadores = self.repository.search_by_team(nome_time)
-        else:
-            jogadores = self.repository.get_all_jogadores()
-
-        paginator = Paginator(jogadores, page_size)
-        return paginator.get_page(page)
-
-    def buscar_atributo(self, nome_jogador, nome_time, atributo):
+    def get_dados_atributo(self, nome_jogador, nome_time, atributo):
+        """
+        Busca e retorna os dados de um atributo específico para um jogador em um time.
+        """
         if not nome_jogador or not nome_time or not atributo:
             return []
 
-        # Busca exata pelos dados
         return self.repository.get_atributo_data(nome_jogador, nome_time, atributo)

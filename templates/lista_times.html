@@ -14,11 +14,11 @@ Lista de Times
     </div>
 
     <form method="get" class="form-inline mb-3">
-        <input type="text" name="nome" class="form-control mr-2" placeholder="Nome do Time">
+        <input type="text" name="nome" class="form-control mr-2" placeholder="Nome do Time" value="{{ request.GET.nome }}">
         <select name="page_size" class="form-control mr-2">
-            <option value="5">5 por página</option>
-            <option value="10" selected>10 por página</option>
-            <option value="15">15 por página</option>
+            <option value="5" {% if request.GET.page_size == "5" %}selected{% endif %}>5 por página</option>
+            <option value="10" {% if request.GET.page_size == "10" %}selected{% endif %}>10 por página</option>
+            <option value="15" {% if request.GET.page_size == "15" %}selected{% endif %}>15 por página</option>
         </select>
         <button type="submit" class="btn btn-primary">Filtrar</button>
     </form>
@@ -44,12 +44,26 @@ Lista de Times
     </table>
 
     <nav>
-        <ul class="pagination">
+        <ul class="pagination mt-4 justify-content-center">
             {% if times.has_previous %}
-            <li class="page-item"><a class="page-link" href="?page={{ times.previous_page_number }}&page_size={{ times.paginator.per_page }}">Anterior</a></li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ times.previous_page_number }}&page_size={{ times.paginator.per_page }}{% if request.GET.nome %}&nome={{ request.GET.nome }}{% endif %}">Anterior</a>
+            </li>
             {% endif %}
+
+            <!-- Botões de índice das páginas -->
+            {% for num in times.paginator.page_range %}
+                {% if num >= times.number|add:'-2' and num <= times.number|add:'2' %}
+                <li class="page-item {% if times.number == num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}&page_size={{ times.paginator.per_page }}{% if request.GET.nome %}&nome={{ request.GET.nome }}{% endif %}">{{ num }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
             {% if times.has_next %}
-            <li class="page-item"><a class="page-link" href="?page={{ times.next_page_number }}&page_size={{ times.paginator.per_page }}">Próxima</a></li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ times.next_page_number }}&page_size={{ times.paginator.per_page }}{% if request.GET.nome %}&nome={{ request.GET.nome }}{% endif %}">Próxima</a>
+            </li>
             {% endif %}
         </ul>
     </nav>

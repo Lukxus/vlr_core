@@ -19,16 +19,16 @@ Gráfico de Atributo
 
     <form method="get" class="form-inline my-3 row">
         <div class="col-md-3 mb-2">
-            <input type="text" name="nome" class="form-control" placeholder="Nome do Jogador" required>
+            <input type="text" name="nome" class="form-control" placeholder="Nome do Jogador" value="{{ request.GET.nome }}" required>
         </div>
         <div class="col-md-3 mb-2">
-            <input type="text" name="nome_time" class="form-control" placeholder="Nome do Time (opcional)">
+            <input type="text" name="nome_time" class="form-control" placeholder="Nome do Time (opcional)" value="{{ request.GET.nome_time }}">
         </div>
         <div class="col-md-3 mb-2">
             <select name="atributo" class="form-control" required>
                 <option value="">Escolha um atributo</option>
                 {% for valor, descricao in atributos %}
-                <option value="{{ valor }}">{{ descricao }}</option>
+                <option value="{{ valor }}" {% if valor == request.GET.atributo %}selected{% endif %}>{{ descricao }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -36,7 +36,7 @@ Gráfico de Atributo
             <select name="agente" class="form-control">
                 <option value="">Todos os Agentes</option>
                 {% for agente in agentes %}
-                <option value="{{ agente }}">{{ agente }}</option>
+                <option value="{{ agente }}" {% if agente == request.GET.agente %}selected{% endif %}>{{ agente }}</option>
                 {% endfor %}
             </select>
         </div>

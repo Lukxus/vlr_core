@@ -55,7 +55,7 @@ class GraficoAtributoView(TemplateView):
             dados = service.buscar_dados_para_grafico(nome, atributo, nome_time, agente)
 
             if dados:
-                # Manter a ordenação por data
+                # Filtrar valores None
                 dados_filtrados = [(data, valor) for data, valor in dados if valor is not None]
 
                 if dados_filtrados:
@@ -70,7 +70,14 @@ class GraficoAtributoView(TemplateView):
                         data=[data for data, _ in dados_filtrados]  # Manter a data para exibição no hover
                     ))
 
-                    p = figure(x_axis_label="Partidas (ordenadas por data)", title=f"Evolução do {atributo}", height=350, width=800)
+                    # Construir o título com base nos filtros
+                    titulo = f"Evolução de {atributo} para {nome}"
+                    if nome_time:
+                        titulo += f" - Time: {nome_time}"
+                    if agente:
+                        titulo += f" - Agente: {agente}"
+
+                    p = figure(x_axis_label="Partidas (ordenadas por data)", title=titulo, height=350, width=800)
                     p.line('x', 'y', source=source, line_width=2)
                     p.circle('x', 'y', size=8, source=source)
 

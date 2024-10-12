@@ -11,6 +11,12 @@ Gráfico de Atributo
 {% block content %}
 <div class="container mt-5">
     <h2>Gráfico de Atributo do Jogador</h2>
+
+    <!-- Botão para voltar para a home -->
+    <div class="mb-3">
+        <a href="{% url 'home' %}" class="btn btn-secondary">Voltar para a Home</a>
+    </div>
+
     <form method="get" class="form-inline my-3 row">
         <div class="col-md-3 mb-2">
             <input type="text" name="nome" class="form-control" placeholder="Nome do Jogador" required>

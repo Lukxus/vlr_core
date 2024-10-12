@@ -7,6 +7,12 @@ Lista de Times
 {% block content %}
 <div class="container mt-5">
     <h2>Lista de Times</h2>
+
+    <!-- Botão para voltar para a home -->
+    <div class="mb-3">
+        <a href="{% url 'home' %}" class="btn btn-secondary">Voltar para a Home</a>
+    </div>
+
     <form method="get" class="form-inline mb-3">
         <input type="text" name="nome" class="form-control mr-2" placeholder="Nome do Time">
         <select name="page_size" class="form-control mr-2">

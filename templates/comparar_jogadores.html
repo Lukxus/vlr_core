@@ -2,6 +2,12 @@
 
 {% block content %}
 <h2>Comparar Jogadores</h2>
+
+<!-- Botão para voltar para a home -->
+<div class="mb-3">
+    <a href="{% url 'home' %}" class="btn btn-secondary">Voltar para a Home</a>
+</div>
+
 <form method="post">
     {% csrf_token %}
     <label for="jogador1">Jogador 1:</label>

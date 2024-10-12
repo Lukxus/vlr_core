@@ -1,10 +1,12 @@
 from bokeh.embed import components
 from bokeh.plotting import figure
+from bokeh.resources import CDN
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import TemplateView
 
 from utils.ATRIBUTOS import ATTRIBUTOS_DE_PARA
+from utils.GraficoService import GraficoService
 from vlr_core.jogador.JogadorService import JogadorService
 from vlr_core.times.TimeService import TimeService
 
@@ -129,7 +131,7 @@ class CompararJogadoresView(View):
     def post(self, request):
         jogador1_nome = request.POST.get('jogador1', '').strip()
         jogador2_nome = request.POST.get('jogador2', '').strip()
-        categoria = request.POST.get('categoria', 'geral')  # Opções: geral, defesa, ataque
+        categoria = request.POST.get('categoria', 'geral').strip()
 
         service = JogadorService()
 
@@ -157,116 +159,24 @@ class CompararJogadoresView(View):
                 return render(request, self.template_name, context)
 
         # Gerar o gráfico radial
-        script, div = gerar_grafico_radial(
+        script, div = GraficoService.gerar_grafico_radial(
             dados_jogador1, dados_jogador2,
             jogador1_nome if dados_jogador1 else None,
-            jogador2_nome if dados_jogador2 else None
+            jogador2_nome if dados_jogador2 else None,
         )
+
+        bokeh_resources = CDN.render()
 
         context = {
             'bokeh_script': script,
             'bokeh_div': div,
+            'bokeh_resources': bokeh_resources,
             'jogador1_nome': jogador1_nome,
             'jogador2_nome': jogador2_nome,
+            'categoria': categoria,  # Adicionando a categoria ao contexto
         }
         return render(request, self.template_name, context)
 
 
-def gerar_grafico_radial(dados_jogador1, dados_jogador2, nome_jogador1, nome_jogador2):
-    import math
-    from bokeh.plotting import figure
-    from bokeh.models import ColumnDataSource, HoverTool, LabelSet
-    from bokeh.embed import components
 
-    atributos = ['ACS', 'KDA', 'ADR', 'HS', 'KAST']
 
-    # Preparar valores e normalizar
-    valores_jogadores = []
-    max_valor = 0
-
-    if dados_jogador1:
-        jogador1_valores = [dados_jogador1.get(attr, 0) or 0 for attr in atributos]
-        max_valor = max(max_valor, max(jogador1_valores))
-        valores_jogadores.append({
-            'nome': nome_jogador1,
-            'valores': jogador1_valores,
-            'cor': 'blue'
-        })
-
-    if dados_jogador2:
-        jogador2_valores = [dados_jogador2.get(attr, 0) or 0 for attr in atributos]
-        max_valor = max(max_valor, max(jogador2_valores))
-        valores_jogadores.append({
-            'nome': nome_jogador2,
-            'valores': jogador2_valores,
-            'cor': 'red'
-        })
-
-    if max_valor == 0:
-        max_valor = 1  # Evitar divisão por zero
-
-    angulos = [n / float(len(atributos)) * 2 * math.pi for n in range(len(atributos))]
-    angulos += angulos[:1]  # Fechar o gráfico
-
-    p = figure(title="Comparação de Atributos", x_range=(-1.2, 1.2), y_range=(-1.2, 1.2),
-               toolbar_location=None, tools="")
-
-    p.toolbar.logo = None
-
-    # Desenhar linhas de grade circulares
-    num_circulos = 5
-    circulos = [i / num_circulos for i in range(1, num_circulos + 1)]
-    for r in circulos:
-        p.circle(0, 0, radius=r, fill_color=None, line_color='gray', line_dash='dotted')
-
-    # Linhas radiais
-    for angulo in angulos[:-1]:
-        x = [0, math.cos(angulo)]
-        y = [0, math.sin(angulo)]
-        p.line(x, y, line_color='gray', line_dash='dotted')
-
-    # Plotar os dados dos jogadores
-    for jogador in valores_jogadores:
-        valores_norm = [v / max_valor for v in jogador['valores']]
-        valores_norm += valores_norm[:1]  # Fechar o gráfico
-
-        x = [math.cos(a) * v for a, v in zip(angulos, valores_norm)]
-        y = [math.sin(a) * v for a, v in zip(angulos, valores_norm)]
-
-        source = ColumnDataSource(data=dict(
-            x=x[:-1],  # Excluir o último ponto repetido
-            y=y[:-1],
-            atributo=atributos,
-            valor=jogador['valores'],
-        ))
-
-        p.line(x, y, line_color=jogador['cor'], legend_label=jogador['nome'], line_width=2)
-        p.patch(x, y, fill_color=jogador['cor'], fill_alpha=0.1)
-
-        # Adicionar marcadores nos pontos
-        pontos = p.circle('x', 'y', size=8, color=jogador['cor'], source=source)
-
-        # Adicionar ferramenta de hover
-        hover = HoverTool(tooltips=[
-            ('Atributo', '@atributo'),
-            ('Valor', '@valor'),
-        ], renderers=[pontos])
-        p.add_tools(hover)
-
-    # Adicionar os labels dos atributos
-    labels = atributos
-    label_x = [math.cos(a) * 1.1 for a in angulos[:-1]]
-    label_y = [math.sin(a) * 1.1 for a in angulos[:-1]]
-    label_source = ColumnDataSource(data=dict(x=label_x, y=label_y, labels=labels))
-
-    labels = LabelSet(x='x', y='y', text='labels', source=label_source,
-                      text_align='center', text_baseline='middle', text_font_size='10pt')
-    p.add_layout(labels)
-
-    p.axis.visible = False
-    p.grid.visible = False
-    p.outline_line_color = None
-    p.legend.location = "top_right"
-
-    script, div = components(p)
-    return script, div

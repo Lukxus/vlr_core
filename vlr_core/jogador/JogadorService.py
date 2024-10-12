@@ -54,19 +54,27 @@ class JogadorService:
             if not jogadores.exists():
                 return None
 
-            atributos = ['acs', 'kda', 'adr', 'hs', 'kast']
+            # Adicionar os novos atributos à lista
+            atributos = ['acs', 'kda', 'adr', 'hs', 'kast', 'fk', 'r', 'k', 'd', 'a']
             dados = {}
 
             for atributo in atributos:
-                campo = f"{atributo}_{categoria}"
+                # Se o atributo tiver variações por categoria, ajuste conforme necessário
+                if atributo in ['acs', 'kda', 'adr', 'hs', 'kast', 'fk', 'r', 'k', 'd', 'a']:
+                    campo = f"{atributo}_{categoria}"
+                else:
+                    # Para os novos atributos, use o campo diretamente
+                    campo = atributo
+
                 # Obter todas as partidas dos jogadores com o nome fornecido
                 partidas_jogador = PartidaJogador.objects.filter(jogador__in=jogadores)
+
                 # Calcular a média do atributo nas partidas
                 media = partidas_jogador.aggregate(media_atributo=Avg(campo))['media_atributo']
                 if media is not None:
-                    dados[atributo.upper()] = media
+                    dados[atributo] = media
                 else:
-                    dados[atributo.upper()] = 0  # Trate conforme necessário
+                    dados[atributo] = 0  # Trate conforme necessário
 
             return dados
         except Exception as e:

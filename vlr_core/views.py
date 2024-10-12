@@ -1,4 +1,6 @@
+import numpy as np
 from bokeh.embed import components
+from bokeh.models import HoverTool, ColumnDataSource
 from bokeh.plotting import figure
 from bokeh.resources import CDN
 from django.shortcuts import render
@@ -53,12 +55,36 @@ class GraficoAtributoView(TemplateView):
             dados = service.buscar_dados_para_grafico(nome, atributo, nome_time, agente)
 
             if dados:
-                datas, valores = zip(*dados)
-                p = figure(x_axis_type="datetime", title=f"Evolução do {atributo}", height=350, width=800)
-                p.line(datas, valores, line_width=2)
-                script, div = components(p)
-                context['bokeh_script'] = script
-                context['bokeh_div'] = div
+                # Manter a ordenação por data
+                dados_filtrados = [(data, valor) for data, valor in dados if valor is not None]
+
+                if dados_filtrados:
+                    # Usar índices sequenciais para o eixo x e garantir que os dados estejam ordenados por data
+                    indices = np.arange(len(dados_filtrados))
+                    valores = [valor for _, valor in dados_filtrados]
+
+                    # Criar o ColumnDataSource
+                    source = ColumnDataSource(data=dict(
+                        x=indices,
+                        y=valores,
+                        data=[data for data, _ in dados_filtrados]  # Manter a data para exibição no hover
+                    ))
+
+                    p = figure(x_axis_label="Partidas (ordenadas por data)", title=f"Evolução do {atributo}", height=350, width=800)
+                    p.line('x', 'y', source=source, line_width=2)
+                    p.circle('x', 'y', size=8, source=source)
+
+                    hover = HoverTool(tooltips=[
+                        ("Data", "@data{%F}"),
+                        (f"Valor de {atributo}", "@y")
+                    ], formatters={'@data': 'datetime'})
+                    p.add_tools(hover)
+
+                    script, div = components(p)
+                    context['bokeh_script'] = script
+                    context['bokeh_div'] = div
+                else:
+                    context['error_message'] = "Nenhum dado disponível para exibição após aplicar os filtros."
             else:
                 context['error_message'] = "Nenhum dado encontrado para a combinação de filtros aplicada."
         else:

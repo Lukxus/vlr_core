@@ -11,12 +11,22 @@ from utils.ATRIBUTOS import LABELS_MAPPING, ATRIBUTOS, VALORES_MAXIMOS_GLOBAIS
 class GraficoService:
 
     @staticmethod
-    def gerar_grafico_radial(dados_jogador1, dados_jogador2, nome_jogador1, nome_jogador2):
+    def gerar_grafico_radial(dados_jogador1, dados_jogador2, nome_jogador1, nome_jogador2, categoria):
         # Usar os atributos e valores do arquivo de configuração
         atributos_full = ATRIBUTOS
 
+        # Construir o título com base nos nomes dos jogadores e na categoria
+        if nome_jogador1 and nome_jogador2:
+            titulo = f"Comparação de Atributos: {nome_jogador1} vs {nome_jogador2} - Categoria: {categoria.capitalize()}"
+        elif nome_jogador1:
+            titulo = f"Atributos de {nome_jogador1} - Categoria: {categoria.capitalize()}"
+        elif nome_jogador2:
+            titulo = f"Atributos de {nome_jogador2} - Categoria: {categoria.capitalize()}"
+        else:
+            titulo = f"Comparação de Atributos - Categoria: {categoria.capitalize()}"
+
         # Preparar o gráfico
-        p = figure(title="Comparação de Atributos", x_range=(-1.2, 1.2), y_range=(-1.2, 1.2),
+        p = figure(title=titulo, x_range=(-1.2, 1.2), y_range=(-1.2, 1.2),
                    toolbar_location=None, tools="")
 
         p.toolbar.logo = None

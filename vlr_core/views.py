@@ -196,6 +196,7 @@ class CompararJogadoresView(View):
             dados_jogador1, dados_jogador2,
             jogador1_nome if dados_jogador1 else None,
             jogador2_nome if dados_jogador2 else None,
+            categoria
         )
 
         bokeh_resources = CDN.render()

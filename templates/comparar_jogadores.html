@@ -1,42 +1,57 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Comparar Jogadores</h2>
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Comparar Jogadores</h2>
 
-<!-- Botão para voltar para a home -->
-<div class="mb-3">
-    <a href="{% url 'home' %}" class="btn btn-secondary">Voltar para a Home</a>
+    <!-- Botão para voltar para a home -->
+    <div class="text-right mb-4">
+        <a href="{% url 'home' %}" class="btn btn-secondary">Voltar para a Home</a>
+    </div>
+
+    <form method="post" class="bg-light p-4 rounded shadow-sm">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="jogador1">Jogador 1:</label>
+                <input type="text" name="jogador1" id="jogador1" class="form-control" placeholder="Nome do Jogador 1" value="{{ jogador1_nome|default:'' }}">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="jogador2">Jogador 2:</label>
+                <input type="text" name="jogador2" id="jogador2" class="form-control" placeholder="Nome do Jogador 2" value="{{ jogador2_nome|default:'' }}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="categoria">Categoria:</label>
+            <select name="categoria" id="categoria" class="form-control">
+                <option value="geral" {% if categoria == "geral" %}selected{% endif %}>Geral</option>
+                <option value="ataque" {% if categoria == "ataque" %}selected{% endif %}>Ataque</option>
+                <option value="defesa" {% if categoria == "defesa" %}selected{% endif %}>Defesa</option>
+            </select>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Gerar Gráfico</button>
+        </div>
+    </form>
+
+    {% if bokeh_script and bokeh_div %}
+        <div class="mt-5">
+            <!-- Incluir os recursos CSS e JS do Bokeh -->
+            <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.0.min.js"></script>
+            <script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.6.0.min.js"></script>
+            <script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.6.0.min.js"></script>
+
+            {{ bokeh_script|safe }}
+            {{ bokeh_div|safe }}
+        </div>
+    {% endif %}
+
+    {% if error_message %}
+        <div class="alert alert-danger mt-4 text-center">
+            {{ error_message }}
+        </div>
+    {% endif %}
 </div>
-
-<form method="post">
-    {% csrf_token %}
-    <label for="jogador1">Jogador 1:</label>
-    <input type="text" name="jogador1" id="jogador1" value="{{ jogador1_nome|default:'' }}">
-
-    <label for="jogador2">Jogador 2:</label>
-    <input type="text" name="jogador2" id="jogador2" value="{{ jogador2_nome|default:'' }}">
-
-    <label for="categoria">Categoria:</label>
-    <select name="categoria" id="categoria">
-        <option value="geral" {% if categoria == "geral" %}selected{% endif %}>Geral</option>
-        <option value="ataque" {% if categoria == "ataque" %}selected{% endif %}>Ataque</option>
-        <option value="defesa" {% if categoria == "defesa" %}selected{% endif %}>Defesa</option>
-    </select>
-
-    <button type="submit">Gerar Gráfico</button>
-</form>
-
-{% if bokeh_script and bokeh_div %}
-    <!-- Incluir os recursos CSS e JS do Bokeh -->
-    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.0.min.js"></script>
-    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.6.0.min.js"></script>
-    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.6.0.min.js"></script>
-
-    {{ bokeh_script|safe }}
-    {{ bokeh_div|safe }}
-{% endif %}
-
-{% if error_message %}
-    <p style="color: red;">{{ error_message }}</p>
-{% endif %}
 {% endblock %}

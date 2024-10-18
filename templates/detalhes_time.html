@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Detalhes do Time
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Partidas do Time</h2>
+
+    <!-- Botão para voltar à lista de times -->
+    <div class="mb-4">
+        <a href="{% url 'lista_times' %}" class="btn btn-secondary">Voltar para a lista de times</a>
+    </div>
+
+    <!-- Exibir total de vitórias e derrotas -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h5>Total de Vitórias: {{ total_vitorias }}</h5>
+        </div>
+        <div class="col-md-6">
+            <h5>Total de Derrotas: {{ total_derrotas }}</h5>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Adversário</th>
+                <th>Resultado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in partidas %}
+            <tr class="{% if item.resultado == 'Vitória' %}table-success{% else %}table-danger{% endif %}">
+                <td>{{ item.partida.sequencia_partida.data }}</td>
+                <td>
+                    {% if item.partida.sequencia_partida.time1.id == time.id %}
+                        {{ item.partida.sequencia_partida.time2.nome }}
+                    {% else %}
+                        {{ item.partida.sequencia_partida.time1.nome }}
+                    {% endif %}
+                </td>
+                <td>{{ item.resultado }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <nav>
+        <ul class="pagination">
+            {% if partidas.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ partidas.previous_page_number }}">Anterior</a></li>
+            {% endif %}
+
+            {% for num in partidas.paginator.page_range %}
+                {% if num >= partidas.number|add:'-2' and num <= partidas.number|add:'2' %}
+                    {% if num == partidas.number %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+
+            {% if partidas.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ partidas.next_page_number }}">Próxima</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <!-- Botão para voltar à lista de times (também no final da página) -->
+    <div class="mt-4">
+        <a href="{% url 'lista_times' %}" class="btn btn-secondary">Voltar para a lista de times</a>
+    </div>
+</div>
+{% endblock %}

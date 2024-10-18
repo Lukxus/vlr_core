@@ -4,45 +4,61 @@
 Gráfico de Atributo
 {% endblock %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.0.min.css" type="text/css">
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
-    <h2>Gráfico de Atributo por Jogador</h2>
-    <form method="get" action="{% url 'grafico_atributo' %}">
-        <div class="form-row">
-            <div class="col">
-                <input type="text" name="nome_jogador" class="form-control" placeholder="Nome do Jogador" value="{{ nome_jogador }}">
-            </div>
-            <div class="col">
-                <input type="text" name="nome_time" class="form-control" placeholder="Nome do Time (opcional)" value="{{ nome_time }}">
-            </div>
-            <div class="col">
-                <select name="atributo" class="form-control">
-                    {% for atributo, nome_amigavel in atributos %}
-                    <option value="{{ atributo }}" {% if atributo == atributo_selecionado %}selected{% endif %}>{{ nome_amigavel }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col">
-                <select name="agente" class="form-control">
-                    <option value="">Todos os Agentes</option>
-                    {% for agente in agentes %}
-                    <option value="{{ agente }}" {% if agente == agente_selecionado %}selected{% endif %}>{{ agente }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col">
-                <button type="submit" class="btn btn-primary">Gerar Gráfico</button>
-            </div>
+    <h2>Gráfico de Atributo do Jogador</h2>
+
+    <!-- Botão para voltar para a home -->
+    <div class="mb-3">
+        <a href="{% url 'home' %}" class="btn btn-secondary">Voltar para a Home</a>
+    </div>
+
+    <form method="get" class="form-inline my-3 row">
+        <div class="col-md-3 mb-2">
+            <input type="text" name="nome" class="form-control" placeholder="Nome do Jogador" value="{{ request.GET.nome }}" required>
+        </div>
+        <div class="col-md-3 mb-2">
+            <input type="text" name="nome_time" class="form-control" placeholder="Nome do Time (opcional)" value="{{ request.GET.nome_time }}">
+        </div>
+        <div class="col-md-3 mb-2">
+            <select name="atributo" class="form-control" required>
+                <option value="">Escolha um atributo</option>
+                {% for valor, descricao in atributos %}
+                <option value="{{ valor }}" {% if valor == request.GET.atributo %}selected{% endif %}>{{ descricao }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3 mb-2">
+            <select name="agente" class="form-control">
+                <option value="">Todos os Agentes</option>
+                {% for agente in agentes %}
+                <option value="{{ agente }}" {% if agente == request.GET.agente %}selected{% endif %}>{{ agente }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-12 text-center">
+            <button type="submit" class="btn btn-primary">Gerar Gráfico</button>
         </div>
     </form>
-    {% if grafico %}
-    <div class="mt-5">
-        <img src="{{ grafico }}" alt="Gráfico do Atributo" class="img-fluid">
-    </div>
-    {% elif error %}
-    <div class="mt-5 alert alert-danger">
-        {{ error }}
-    </div>
+
+    {% if bokeh_script and bokeh_div %}
+        <div class="mt-5">
+            {{ bokeh_script|safe }}
+            {{ bokeh_div|safe }}
+        </div>
+    {% elif error_message %}
+        <div class="alert alert-warning mt-5">{{ error_message }}</div>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.0.min.js"></script>
+    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.6.0.min.js"></script>
+    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.6.0.min.js"></script>
+    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-api-3.6.0.min.js"></script>
 {% endblock %}

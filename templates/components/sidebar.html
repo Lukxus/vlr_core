@@ -1,0 +1,26 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/sidebar/styles.css' %}">
+
+<aside class="sidebar">
+    <a href="{% url 'home' %}">
+        <img class="mack" src="{% static 'images/logoMack.png' %}" alt="Logo Mackenzie">
+    </a>
+
+    <nav class="nav-buttons">
+        <a href="{% url 'home' %}" class="nav-button">
+        <img src="{% static 'images/btn1.png' %}" alt="Home" class="button-icon">
+        </a>
+        <a href="{% url 'lista_jogadores' %}" class="nav-button">
+            <img src="{% static 'images/btn2.png' %}" alt="Lista de Jogadores" class="button-icon">
+        </a>
+        <a href="{% url 'lista_times' %}" class="nav-button">
+            <img src="{% static 'images/btn5.png' %}" alt="Lista de Times" class="button-icon">
+        </a>
+        <a href="{% url 'grafico_atributo' %}" class="nav-button">
+            <img src="{% static 'images/btn3.png' %}" alt="Gráfico de Atributo por Jogador" class="button-icon">
+        </a>
+        <a href="{% url 'comparar_jogadores' %}" class="nav-button">
+            <img src="{% static 'images/btn4.png' %}" alt="Comparar Jogadores" class="button-icon">
+        </a>
+    </nav>
+</aside>

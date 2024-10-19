@@ -12,15 +12,16 @@
 
     {% block extra_css %}{% endblock %}
     {% block extra_head %}{% endblock %}
+
 </head>
 <body class="d-flex flex-column min-vh-100">
-    {% include 'header.html' %}
+    {% include './components/sidebar.html' %}
 
     <main class="container my-5 flex-grow-1">
         {% block content %}{% endblock %}
     </main>
 
-    {% include 'footer.html' %}
+    {% include './components/footer.html' %}
 
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>

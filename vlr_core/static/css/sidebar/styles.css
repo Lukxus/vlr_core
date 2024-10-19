@@ -1,0 +1,65 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100px;
+    height: 100%;
+    background-color: #262525;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.logo-container {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.logo-container img {
+    width: 80px;
+    height: 80px;
+}
+
+.logo-container span {
+    display: block;
+    color: #FFF;
+    font-size: 24px;
+    margin-top: 10px;
+}
+
+.nav-buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.nav-button {
+    width: 55px;
+    height: 55px;
+    border-radius: 20%;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+    transition: background-color 0.3s ease;
+    border: none;
+}
+
+.nav-button:hover, .nav-button:focus {
+    background-color: #7B20E2;
+}
+
+.button-icon {
+    width: 30px;
+    height: 30px;
+}
+
+.mack {
+    width: 50px;
+    height: 50px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}

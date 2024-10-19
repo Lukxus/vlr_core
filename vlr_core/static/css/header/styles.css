@@ -1,0 +1,17 @@
+.header {
+    width: 100%;
+    padding: 30px 100px;
+}
+
+.header h1 {
+    font-weight: bold;
+    font-size: 30px;
+    color: #fff;
+    text-align: left;
+    margin-top: 5px;
+}
+
+.title:hover {
+    text-decoration: none;
+}
+

@@ -2,3 +2,72 @@ body {
     background-color: #262525;
     color: #FFF;
 }
+
+#speakBtn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #7B20E2;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#speakBtn:hover {
+    background-color: #6a1dc9;
+}
+
+.highlight {
+    background-color: #7B20E2;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.boxes-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding: 0 150px;
+}
+
+.box {
+    width: 360px;
+    height: 220px;
+    background-color: #1D1D1D;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-right: 10px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    animation: carouselAnimation 6s infinite;
+}
+
+.box:hover {
+    background-color: #7B20E2;
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.boxes-container .box:last-child {
+    margin-right: 0;
+}
+
+.menu-item {
+    background-color: #1D1D1D;
+    color: white;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.menu-item:hover {
+    background-color: #6a1dc9;
+    color: white;
+}
+
+
+.text-white {
+    color: white;
+}

@@ -1,0 +1,19 @@
+.box-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: white;
+}
+
+.counter {
+    font-size: 45px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.subtext {
+    font-size: 20px;
+    font-weight: normal;
+}

@@ -1,2 +1,3 @@
 # Ignorar a pasta de dados do PostgreSQL
 volumes/
+venv/

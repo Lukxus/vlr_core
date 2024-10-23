@@ -5,8 +5,8 @@ Lista de Jogadores
 {% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2>Lista de Jogadores</h2>
+<div class="container mt-2">
+    <h2 class="title">Lista de Jogadores</h2>
 
     <!-- Botão para voltar para a home -->
     <div class="mb-3">
@@ -49,12 +49,23 @@ Lista de Jogadores
 
     <nav aria-label="Page navigation">
         <ul class="pagination mt-4 justify-content-center">
+            <!-- Botão "Voltar ao Início" -->
+            {% if jogadores.number > 1 %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1&page_size={{ page_size }}{% if request.GET.nome %}&nome={{ request.GET.nome }}{% endif %}{% if request.GET.nome_time %}&nome_time={{ request.GET.nome_time }}{% endif %}">
+                    &laquo; <!-- << -->
+                </a>
+            </li>
+            {% endif %}
+
+            <!-- Botão "Anterior" -->
             {% if jogadores.has_previous %}
             <li class="page-item">
                 <a class="page-link" href="?page={{ jogadores.previous_page_number }}&page_size={{ page_size }}{% if request.GET.nome %}&nome={{ request.GET.nome }}{% endif %}{% if request.GET.nome_time %}&nome_time={{ request.GET.nome_time }}{% endif %}">Anterior</a>
             </li>
             {% endif %}
 
+            <!-- Números das páginas -->
             {% for num in jogadores.paginator.page_range %}
                 {% if num >= jogadores.number|add:'-2' and num <= jogadores.number|add:'2' %}
                 <li class="page-item {% if jogadores.number == num %}active{% endif %}">
@@ -63,9 +74,19 @@ Lista de Jogadores
                 {% endif %}
             {% endfor %}
 
+            <!-- Botão "Próxima" -->
             {% if jogadores.has_next %}
             <li class="page-item">
                 <a class="page-link" href="?page={{ jogadores.next_page_number }}&page_size={{ page_size }}{% if request.GET.nome %}&nome={{ request.GET.nome }}{% endif %}{% if request.GET.nome_time %}&nome_time={{ request.GET.nome_time }}{% endif %}">Próxima</a>
+            </li>
+            {% endif %}
+
+            <!-- Botão "Ir para o Fim" -->
+            {% if jogadores.number < jogadores.paginator.num_pages %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ jogadores.paginator.num_pages }}&page_size={{ page_size }}{% if request.GET.nome %}&nome={{ request.GET.nome }}{% endif %}{% if request.GET.nome_time %}&nome_time={{ request.GET.nome_time }}{% endif %}">
+                    &raquo; <!-- >> -->
+                </a>
             </li>
             {% endif %}
         </ul>

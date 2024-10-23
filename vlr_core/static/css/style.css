@@ -1,0 +1,103 @@
+body {
+    background-color: #262525;
+    color: #FFF;
+}
+
+.custom-footer {
+    background-color: #7B20E2;
+}
+
+.title {
+    font-size: 40px;
+}
+body, h2, p, a, label, input, select, table, th, td {
+    color: white;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.form-control {
+    background-color: #333;
+    color: white;
+}
+
+.btn-secondary, .btn-primary {
+    background-color: #7B20E2;
+    border-color: #7B20E2;
+}
+
+.btn-secondary:hover, .btn-primary:hover {
+    background-color: #6a1dc9;
+    border-color: #6a1dc9;
+}
+
+.page-link {
+    color: white;
+}
+
+.page-item.active .page-link {
+    background-color: #7B20E2;
+    border-color: #7B20E2;
+}
+
+.pagination .page-link {
+    color: #262525;
+    background-color: #FFF;
+    border: 1px solid #dee2e6;
+}
+
+.pagination .page-link:hover {
+    color: #7B20E2;
+    background-color: #f1f1f1;
+    border-color: #7B20E2;
+}
+
+.pagination .page-item.active .page-link {
+    color: #FFF;
+    background-color: #7B20E2;
+    border-color: #7B20E2;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: #FFF;
+    border-color: #dee2e6;
+}
+
+.btn-primary {
+    background-color: #7B20E2;
+    border-color: #7B20E2;
+}
+
+.btn-primary:hover {
+    background-color: #6a1dc9;
+    border-color: #6a1dc9;
+}
+
+.form-control {
+    background-color: #333;
+    color: white;
+    border: 1px solid #555;
+}
+
+.form-control::placeholder {
+    color: #888;
+}
+
+label {
+    color: white;
+}
+
+h2, p {
+    color: white;
+}
+
+.bg-light {
+    background-color: #1d1d1d !important;
+    color: white;
+}
+
+
+

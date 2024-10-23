@@ -5,8 +5,8 @@ Lista de Times
 {% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2>Lista de Times</h2>
+<div class="container mt-2">
+    <h2 class="title">Lista de Times</h2>
 
     <!-- Botão para voltar para a home -->
     <div class="mb-3">
@@ -45,6 +45,16 @@ Lista de Times
 
     <nav>
         <ul class="pagination mt-4 justify-content-center">
+            <!-- Botão "Voltar ao Início" -->
+            {% if times.number > 1 %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1&page_size={{ times.paginator.per_page }}{% if request.GET.nome %}&nome={{ request.GET.nome }}{% endif %}">
+                    &laquo; <!-- << -->
+                </a>
+            </li>
+            {% endif %}
+
+            <!-- Botão "Anterior" -->
             {% if times.has_previous %}
             <li class="page-item">
                 <a class="page-link" href="?page={{ times.previous_page_number }}&page_size={{ times.paginator.per_page }}{% if request.GET.nome %}&nome={{ request.GET.nome }}{% endif %}">Anterior</a>
@@ -60,9 +70,19 @@ Lista de Times
                 {% endif %}
             {% endfor %}
 
+            <!-- Botão "Próxima" -->
             {% if times.has_next %}
             <li class="page-item">
                 <a class="page-link" href="?page={{ times.next_page_number }}&page_size={{ times.paginator.per_page }}{% if request.GET.nome %}&nome={{ request.GET.nome }}{% endif %}">Próxima</a>
+            </li>
+            {% endif %}
+
+            <!-- Botão "Ir para o Fim" -->
+            {% if times.number < times.paginator.num_pages %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ times.paginator.num_pages }}&page_size={{ times.paginator.per_page }}{% if request.GET.nome %}&nome={{ request.GET.nome }}{% endif %}">
+                    &raquo; <!-- >> -->
+                </a>
             </li>
             {% endif %}
         </ul>

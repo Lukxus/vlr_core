@@ -9,22 +9,21 @@ Gráfico de Atributo
 {% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2>Gráfico de Atributo do Jogador</h2>
+<div class="container mt-2">
+    <h2 class="title text-center">Gráfico de Atributo do Jogador</h2>
 
-    <!-- Botão para voltar para a home -->
     <div class="mb-3">
         <a href="{% url 'home' %}" class="btn btn-secondary">Voltar para a Home</a>
     </div>
 
-    <form method="get" class="form-inline my-3 row">
-        <div class="col-md-3 mb-2">
+    <form method="get" class="row gy-3 gx-2 align-items-center">
+        <div class="col-md-2">
             <input type="text" name="nome" class="form-control" placeholder="Nome do Jogador" value="{{ request.GET.nome }}" required>
         </div>
-        <div class="col-md-3 mb-2">
+        <div class="col-md-3">
             <input type="text" name="nome_time" class="form-control" placeholder="Nome do Time (opcional)" value="{{ request.GET.nome_time }}">
         </div>
-        <div class="col-md-3 mb-2">
+        <div class="col-md-3">
             <select name="atributo" class="form-control" required>
                 <option value="">Escolha um atributo</option>
                 {% for valor, descricao in atributos %}
@@ -32,7 +31,7 @@ Gráfico de Atributo
                 {% endfor %}
             </select>
         </div>
-        <div class="col-md-3 mb-2">
+        <div class="col-md-2">
             <select name="agente" class="form-control">
                 <option value="">Todos os Agentes</option>
                 {% for agente in agentes %}
@@ -40,20 +39,23 @@ Gráfico de Atributo
                 {% endfor %}
             </select>
         </div>
-        <div class="col-md-12 text-center">
+        <div class="col-md-2 d-flex justify-content-end">
             <button type="submit" class="btn btn-primary">Gerar Gráfico</button>
         </div>
     </form>
 
     {% if bokeh_script and bokeh_div %}
-        <div class="mt-5">
-            {{ bokeh_script|safe }}
-            {{ bokeh_div|safe }}
+        <div class="mt-5" style="text-align: center;">
+            <div style="display: inline-block; width: 80%; max-width: 1200px;">
+                {{ bokeh_script|safe }}
+                {{ bokeh_div|safe }}
+            </div>
         </div>
     {% elif error_message %}
         <div class="alert alert-warning mt-5">{{ error_message }}</div>
     {% endif %}
 </div>
+
 {% endblock %}
 
 {% block extra_scripts %}

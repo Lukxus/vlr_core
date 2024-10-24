@@ -20,6 +20,9 @@ class JogadorRepository:
     def search_by_team(self, nome_time):
         return Jogador.objects.filter(time__nome__icontains=nome_time)
 
+    def count_jogadores_by_nome(self):
+        return Jogador.objects.values('nome').distinct().count()
+
     def get_partidas_jogador(self, jogadores_ids, agente=None, atributo=None):
         query = PartidaJogador.objects.filter(jogador__id__in=jogadores_ids)
         if agente:

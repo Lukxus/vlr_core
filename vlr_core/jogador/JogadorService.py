@@ -48,6 +48,9 @@ class JogadorService:
         """
         return self.partida_jogador_service.listar_agentes()
 
+    def contar_jogadore(self):
+        return self.repository.count_jogadores_by_nome()
+
     def obter_dados_para_comparacao(self, nome_jogador, categoria):
         try:
             jogadores = Jogador.objects.filter(nome=nome_jogador)

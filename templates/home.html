@@ -55,6 +55,11 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/script.js' %}"></script>
 
+    <div id="counter1" data-counter data-end-value="{{ quantidade_total_jogadores }}" data-duration="1500" data-subtext-id="subtext1" data-is-percentage="false"></div>
+    <div id="counter2" data-counter data-end-value="{{ quantidade_total_partidas }}" data-duration="1500" data-subtext-id="subtext2" data-is-percentage="false"></div>
+    <div id="counter3" data-counter data-end-value="{{ quantidade_total_campeonatos }}" data-duration="1500" data-subtext-id="subtext3" data-is-percentage="false"></div>
+    <div id="counter4" data-counter data-end-value="66" data-duration="1500" data-subtext-id="subtext4" data-is-percentage="true"></div>
+
     <script src="{% static 'js/components/counter.js' %}"></script>
 
     <script src="{% static 'js/components/tts.js' %}"></script>

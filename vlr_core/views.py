@@ -9,12 +9,31 @@ from django.views.generic import TemplateView
 
 from utils.ATRIBUTOS import ATTRIBUTOS_DE_PARA
 from utils.GraficoService import GraficoService
+from vlr_core.campeonato.CampeonatoService import CampeonatoService
 from vlr_core.jogador.JogadorService import JogadorService
+from vlr_core.partida.PartidaService import PartidaService
 from vlr_core.times.TimeService import TimeService
 
 
 class HomeView(TemplateView):
     template_name = "home.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        jogadorService = JogadorService()
+        quantidade_total_jogadores = jogadorService.contar_jogadore()
+
+        partidaService = PartidaService()
+        quantidade_total_partidas = partidaService.contar_partidas()
+
+        campeonatoService = CampeonatoService()
+        quantidade_total_campeonatos = campeonatoService.contar_campeonatos()
+
+        context['quantidade_total_jogadores'] = quantidade_total_jogadores
+        context['quantidade_total_partidas'] = quantidade_total_partidas
+        context['quantidade_total_campeonatos'] = quantidade_total_campeonatos
+        return context
 
 
 class ListaJogadoresView(TemplateView):

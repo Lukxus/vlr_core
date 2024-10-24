@@ -16,8 +16,13 @@ function animateCounter(id, start, end, duration, subtextId, isPercentage = fals
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    animateCounter('counter1', 0, 30858, 1500, 'subtext1');
-    animateCounter('counter2', 0, 45354, 1500, 'subtext2');
-    animateCounter('counter3', 0, 8712, 1500, 'subtext3');
-    animateCounter('counter4', 0, 66, 1500, 'subtext4', true);
+    document.querySelectorAll('[data-counter]').forEach(counterElement => {
+        const id = counterElement.getAttribute('id');
+        const endValue = parseInt(counterElement.getAttribute('data-end-value'), 10);
+        const duration = parseInt(counterElement.getAttribute('data-duration'), 10);
+        const subtextId = counterElement.getAttribute('data-subtext-id');
+        const isPercentage = counterElement.getAttribute('data-is-percentage') === 'true';
+
+        animateCounter(id, 0, endValue, duration, subtextId, isPercentage);
+    });
 });

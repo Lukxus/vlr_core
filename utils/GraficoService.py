@@ -35,7 +35,8 @@ class GraficoService:
         num_circulos = 5
         circulos = [i / num_circulos for i in range(1, num_circulos + 1)]
         for radius in circulos:
-            p.circle(0, 0, radius=radius, fill_color=None, line_color='gray', line_dash='dotted', line_width=0.5)
+            p.annulus(x=0, y=0, inner_radius=0, outer_radius=radius, fill_color=None, line_color='gray',
+                      line_dash='dotted', line_width=0.5)
 
         # Linhas radiais
         angulos = [n / float(len(atributos_full)) * 2 * math.pi for n in range(len(atributos_full))]

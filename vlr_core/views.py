@@ -98,7 +98,7 @@ class GraficoAtributoView(TemplateView):
 
                     p = figure(x_axis_label="Partidas (ordenadas por data)", title=titulo, height=350, width=800)
                     p.line('x', 'y', source=source, line_width=2)
-                    p.circle('x', 'y', size=8, source=source)
+                    p.scatter('x', 'y', marker="circle", size=8, source=source)
 
                     hover = HoverTool(tooltips=[
                         ("Data", "@data{%F}"),

@@ -36,8 +36,8 @@ body {
 }
 
 .box {
-    width: 360px;
-    height: 220px;
+    width: 320px;
+    height: 160px;
     background-color: #1D1D1D;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -70,4 +70,8 @@ body {
 
 .text-white {
     color: white;
+}
+
+.custom-footer {
+    background-color: #7B20E2;
 }

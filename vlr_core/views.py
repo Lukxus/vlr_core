@@ -116,9 +116,19 @@ class GraficoAtributoView(TemplateView):
                     if agente:
                         titulo += f" - Agente: {agente}"
 
-                    p = figure(x_axis_label="Partidas (ordenadas por data)", title=titulo, height=350, width=800)
-                    p.line('x', 'y', source=source, line_width=2)
-                    p.scatter('x', 'y', marker="circle", size=8, source=source)
+                    p = figure(x_axis_label="Partidas (ordenadas por data)", title=titulo, height=350, width=800,
+                               background_fill_color="#2c2c2c", border_fill_color="#2c2c2c")
+
+                    p.line('x', 'y', source=source, line_width=2, line_color="#7B20E2")
+                    p.scatter('x', 'y', marker="circle", size=8, source=source, fill_color="#7B20E2",
+                              line_color="purple")
+
+                    # Modificar a cor dos eixos e outros elementos visuais para melhor visibilidade em fundo preto
+                    p.xaxis.axis_label_text_color = "white"
+                    p.yaxis.axis_label_text_color = "white"
+                    p.xaxis.major_label_text_color = "white"
+                    p.yaxis.major_label_text_color = "white"
+                    p.title.text_color = "white"
 
                     hover = HoverTool(tooltips=[
                         ("Data", "@data{%F}"),

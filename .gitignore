@@ -11,3 +11,4 @@ _pycache_/
 # Cache directories
 *.cache
 *.log
+*.iml

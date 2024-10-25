@@ -15,18 +15,12 @@
     {% include './components/header.html' %}
     {% include './components/sidebar.html' %}
 
-    <!-- Incluir os quadrados -->
     {% include './components/boxes.html' %}
 
-
-    <!-- Adicionar o histograma de partidas por mês -->
-    <div class="container mt-5 text-center">
-        <h2 class="text-white">Histograma de Partidas por Mês</h2>
+    <div class="container mt-2 text-center">
         <div>
-            <!-- Certifique-se de que o gráfico Bokeh seja carregado corretamente -->
             {% if bokeh_script_partidas and bokeh_div_partidas %}
-                <div class="mt-5 d-flex justify-content-center">
-                    <!-- Incluir os recursos CSS e JS do Bokeh -->
+                <div class="mt-3 d-flex justify-content-center">
                     <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.0.min.js"></script>
                     <script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.6.0.min.js"></script>
                     <script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.6.0.min.js"></script>
@@ -38,7 +32,7 @@
         </div>
     </div>
 
-    <div class="container mt-5 text-center">
+    <div class="container mt-2 text-center">
         <h2 id="text-1" class="text-white">Bem-vindo à Plataforma de Análise de Equipes de Valorant</h2>
         <p id="text-2" class="lead mt-4 text-white">Escolha uma das opções abaixo para navegar:</p>
         <div class="list-group mt-4">

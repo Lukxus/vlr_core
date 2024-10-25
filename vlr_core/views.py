@@ -36,8 +36,8 @@ class HomeView(TemplateView):
 
         partidas_por_mes = partidaService.contar_partidas_por_mes()
         meses, quantidades = zip(*partidas_por_mes)
-        p = figure(x_range=meses, title="Partidas por Mês", height=350, width=1000, background_fill_color="#2c2c2c")
-        p.vbar(x=meses, top=quantidades, width=0.7, color="purple")
+        p = figure(x_range=meses, title="Quantidade de partidas por mês na base de dados", height=250, width=2000, background_fill_color="#2c2c2c")
+        p.vbar(x=meses, top=quantidades, width=0.6, color="#7B20E2")
         hover = HoverTool()
         hover.tooltips = [("Mês", "@x"), ("Quantidade", "@top")]
         p.add_tools(hover)

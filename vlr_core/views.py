@@ -33,6 +33,26 @@ class HomeView(TemplateView):
         context['quantidade_total_jogadores'] = quantidade_total_jogadores
         context['quantidade_total_partidas'] = quantidade_total_partidas
         context['quantidade_total_campeonatos'] = quantidade_total_campeonatos
+
+        partidas_por_mes = partidaService.contar_partidas_por_mes()
+        meses, quantidades = zip(*partidas_por_mes)
+        p = figure(x_range=meses, title="Partidas por Mês", height=350, width=1000, background_fill_color="#2c2c2c")
+        p.vbar(x=meses, top=quantidades, width=0.7, color="purple")
+        hover = HoverTool()
+        hover.tooltips = [("Mês", "@x"), ("Quantidade", "@top")]
+        p.add_tools(hover)
+        p.xgrid.grid_line_color = None
+        p.y_range.start = 0
+        p.xaxis.major_label_text_font_size = '0pt'  # Remove as legendas do eixo X
+        p.title.text_color = "white"  # Cor do título
+        p.xaxis.axis_label_text_color = "white"
+        p.yaxis.axis_label_text_color = "white"
+        p.yaxis.major_label_text_color = "white"  # Cor dos labels do eixo Y
+        p.border_fill_color = "#2c2c2c"  # Fundo em torno do gráfico
+        script, div = components(p)
+        context['bokeh_script_partidas'] = script
+        context['bokeh_div_partidas'] = div
+
         return context
 
 

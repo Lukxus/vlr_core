@@ -18,6 +18,26 @@
     <!-- Incluir os quadrados -->
     {% include './components/boxes.html' %}
 
+
+    <!-- Adicionar o histograma de partidas por mês -->
+    <div class="container mt-5 text-center">
+        <h2 class="text-white">Histograma de Partidas por Mês</h2>
+        <div>
+            <!-- Certifique-se de que o gráfico Bokeh seja carregado corretamente -->
+            {% if bokeh_script_partidas and bokeh_div_partidas %}
+                <div class="mt-5 d-flex justify-content-center">
+                    <!-- Incluir os recursos CSS e JS do Bokeh -->
+                    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.0.min.js"></script>
+                    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.6.0.min.js"></script>
+                    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.6.0.min.js"></script>
+
+                    {{ bokeh_script_partidas|safe }}
+                    {{ bokeh_div_partidas|safe }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
     <div class="container mt-5 text-center">
         <h2 id="text-1" class="text-white">Bem-vindo à Plataforma de Análise de Equipes de Valorant</h2>
         <p id="text-2" class="lead mt-4 text-white">Escolha uma das opções abaixo para navegar:</p>
@@ -37,31 +57,32 @@
         </div>
     </div>
 
+
+
     <button id="speakBtn">Ouvir Página</button>
 
     <div vw class="enabled">
-    <div vw-access-button class="active"></div>
-    <div vw-plugin-wrapper>
-        <div class="vw-plugin-top-wrapper"></div>
-    </div>
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
     </div>
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
     <script>
         const vlibrasWidget = new window.VLibras.Widget('https://vlibras.gov.br/app');
     </script>
-    <!-- <script src="{% static 'js/Vlibras/vlibras.js' %}"></script> -->
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/script.js' %}"></script>
 
+    <!-- Contadores -->
     <div id="counter1" data-counter data-end-value="{{ quantidade_total_jogadores }}" data-duration="1500" data-subtext-id="subtext1" data-is-percentage="false"></div>
     <div id="counter2" data-counter data-end-value="{{ quantidade_total_partidas }}" data-duration="1500" data-subtext-id="subtext2" data-is-percentage="false"></div>
     <div id="counter3" data-counter data-end-value="{{ quantidade_total_campeonatos }}" data-duration="1500" data-subtext-id="subtext3" data-is-percentage="false"></div>
     <div id="counter4" data-counter data-end-value="66" data-duration="1500" data-subtext-id="subtext4" data-is-percentage="true"></div>
 
     <script src="{% static 'js/components/counter.js' %}"></script>
-
     <script src="{% static 'js/components/tts.js' %}"></script>
 
     {% block extra_scripts %}{% endblock %}

@@ -1,6 +1,7 @@
 # Ignorar a pasta de dados do PostgreSQL
 volumes/
 venv/
+vlr/__pycache__*
 
 # Python cache files
 _pycache_/
@@ -12,3 +13,4 @@ _pycache_/
 *.cache
 *.log
 *.iml
+*.pyc

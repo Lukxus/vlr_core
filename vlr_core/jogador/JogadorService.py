@@ -84,4 +84,15 @@ class JogadorService:
             print(f"Erro ao obter dados para comparação: {e}")
             return None
 
+    def obter_dados_jogador_clusterizacao(self, nome_jogador=None, time_nome=None, ano=None):
+        jogadores = self.repository.get_jogador_by_name(nome_jogador)
+
+        if not jogadores.exists():
+            return None
+
+        jogadores_ids = jogadores.values_list('id', flat=True)
+        dados = self.repository.get_dados_jogador_clusterizacao(jogadores_ids)
+
+        return dados
+
 

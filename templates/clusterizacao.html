@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-2">
+    <h2 class="title">Evolução dos Jogadores/Times (Clusterização)</h2>
+
+    <!-- Botão para voltar para a home -->
+    <div class="mb-3">
+        <a href="{% url 'home' %}" class="btn btn-secondary">Voltar para a Home</a>
+    </div>
+
+    <form method="post" class="bg-light p-4 rounded shadow-sm">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="jogador">Jogador:</label>
+                <input type="text" name="jogador" id="jogador" class="form-control" placeholder="Nome do Jogador" value="{{ jogador_nome|default:'' }}">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="time">Time:</label>
+                <input type="text" name="time" id="time" class="form-control" placeholder="Nome do Time" value="{{ time_nome|default:'' }}">
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Gerar Gráfico</button>
+        </div>
+    </form>
+
+
+    {% if error_message %}
+        <div class="alert alert-danger mt-4 text-center">
+            {{ error_message }}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,4 +1,6 @@
 from vlr_core.models import Jogador, PartidaJogador
+from django.db.models import F, Func, Avg
+from django.db.models.functions import ExtractYear
 
 
 class JogadorRepository:
@@ -31,3 +33,14 @@ class JogadorRepository:
             query = query.order_by('partida__sequencia_partida__data').values_list('partida__sequencia_partida__data',
                                                                                    atributo)
         return query
+
+    def get_dados_jogador_clusterizacao(self, jogadores_ids):
+        return (PartidaJogador.objects
+                .filter(jogador__id__in=jogadores_ids)
+                .annotate(ano=ExtractYear(F('partida__sequencia_partida__data')))
+                .values('ano', 'jogador__nome')
+                .annotate(
+            kda_media=Avg('kda_geral'),
+            acs_media=Avg('acs_geral')
+        )
+                .order_by('ano'))

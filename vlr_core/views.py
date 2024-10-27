@@ -1,11 +1,16 @@
 import numpy as np
+import pandas as pd
 from bokeh.embed import components
-from bokeh.models import HoverTool, ColumnDataSource
+from bokeh.models import HoverTool, ColumnDataSource, CDSView, BooleanFilter
 from bokeh.plotting import figure
+from bokeh.palettes import Spectral4
+from bokeh.layouts import gridplot
 from bokeh.resources import CDN
+from bokeh.transform import factor_cmap
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import TemplateView
+from sklearn.cluster import KMeans
 
 from utils.ATRIBUTOS import ATTRIBUTOS_DE_PARA
 from utils.GraficoService import GraficoService
@@ -259,6 +264,116 @@ class CompararJogadoresView(View):
             'categoria': categoria,  # Adicionando a categoria ao contexto
         }
         return render(request, self.template_name, context)
+
+class ClusterizacaoView(View):
+    template_name = 'clusterizacao.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        jogador_nome = request.POST.get('jogador', '').strip()
+        time_nome = request.POST.get('time', '').strip()
+
+        # Verificar se ao menos um dos campos foi preenchido
+        if not jogador_nome and not time_nome:
+            context = {'error_message': 'Por favor, preencha pelo menos um dos campos.'}
+            return render(request, self.template_name, context)
+
+        # Obter os dados usando o JogadorService
+        jogador_service = JogadorService()
+        dados_query = jogador_service.obter_dados_jogador_clusterizacao()
+
+        # Convertendo o QuerySet para DataFrame
+        dados = pd.DataFrame(list(dados_query))
+
+        # Verificar se o DataFrame está vazio
+        if dados.empty:
+            context = {'error_message': 'Nenhum dado encontrado para os filtros aplicados.'}
+            return render(request, self.template_name, context)
+
+        # Nome do jogador para destacar
+        jogador_destacado = jogador_nome if jogador_nome else None
+
+        # Lista para armazenar os gráficos de cada ano
+        graficos_por_ano = []
+
+        # Agrupar o DataFrame por ano
+        for ano, grupo in dados.groupby('ano'):
+            # Selecionar as colunas numéricas para a clusterização
+            x = grupo[['kda_media', 'acs_media']]
+
+            # Verificar se o grupo possui amostras suficientes para o número de clusters
+            if len(grupo) < 4:
+                # Se não houver amostras suficientes, pular este ano
+                continue
+
+            # Criar o modelo KMeans com o número desejado de clusters (ex: 4 clusters)
+            kmeans = KMeans(n_clusters=4)
+            kmeans.fit(x)
+
+            # Adicionar o cluster de cada jogador ao DataFrame
+            grupo['Cluster'] = kmeans.labels_.astype(str)
+
+            # Verificar se o jogador de interesse está presente neste ano
+            grupo['is_destacado'] = grupo['jogador__nome'] == jogador_destacado if jogador_destacado else False
+
+            # Obter os centroides dos clusters
+            centroides = kmeans.cluster_centers_
+
+            # Criar fontes de dados para os gráficos e para os centroides
+            source = ColumnDataSource(grupo)
+            centroid_source = ColumnDataSource(data=dict(
+                kda=centroides[:, 0],
+                acs=centroides[:, 1]
+            ))
+
+            # Criar uma view para o jogador destacado
+            view_destacado = CDSView(source=source, filters=[BooleanFilter(grupo['is_destacado'])])
+
+            # Criar o gráfico de scatter plot para esse ano
+            p = figure(title=f"Clusterização - Ano {int(ano)}",
+                       x_axis_label="KDA Média",
+                       y_axis_label="ACS Média",
+                       tools="pan,wheel_zoom,box_zoom,reset,hover",
+                       tooltips=[("Jogador", "@jogador__nome"), ("KDA Média", "@kda_media"),
+                                 ("ACS Média", "@acs_media")])
+
+            # Adicionar os pontos dos jogadores coloridos pelos clusters
+            p.scatter('kda_media', 'acs_media', source=source, size=8,
+                      color=factor_cmap('Cluster', palette=Spectral4, factors=grupo['Cluster'].unique()),
+                      legend_field='Cluster')
+
+            # Adicionar os centroides como 'x' pretos
+            p.scatter('kda', 'acs', source=centroid_source, size=15, color='black', marker='x',
+                      legend_label='Centroides')
+
+            # Adicionar destaque para o jogador específico usando a view
+            if jogador_destacado:
+                p.scatter('kda_media', 'acs_media', source=source, size=12, color='purple',
+                          legend_label=f'{jogador_destacado}', view=view_destacado)
+
+            # Adicionar o gráfico à lista
+            graficos_por_ano.append(p)
+
+        # Organizar os gráficos lado a lado
+        grid = gridplot(graficos_por_ano, ncols=2)  # Ajuste ncols conforme o número de gráficos e espaço
+
+        # Renderizar o template com o gráfico
+        context = {
+            'jogador_nome': jogador_nome,
+            'time_nome': time_nome,
+            'graficos': grid,
+            'dados_jogador': dados
+        }
+        return render(request, self.template_name, context)
+
+
+class PredicaoView(View):
+    template_name = 'predicao_vencedor.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
 
 
 

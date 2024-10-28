@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from bokeh.embed import components
+from bokeh.embed import components, server_document
 from bokeh.models import HoverTool, ColumnDataSource, CDSView, BooleanFilter
 from bokeh.plotting import figure
 from bokeh.palettes import Spectral4
@@ -300,23 +300,25 @@ class ClusterizacaoView(View):
 
         # Agrupar o DataFrame por ano
         for ano, grupo in dados.groupby('ano'):
+            grupo = grupo.dropna(subset=['kda_media', 'acs_media']).copy()  # Cria uma cópia explícita
+
             # Selecionar as colunas numéricas para a clusterização
             x = grupo[['kda_media', 'acs_media']]
 
-            # Verificar se o grupo possui amostras suficientes para o número de clusters
-            if len(grupo) < 4:
-                # Se não houver amostras suficientes, pular este ano
-                continue
+            # Verifica se há valores NaN em x
+            if x.isna().any().any():
+                # Remover linhas com valores NaN
+                x = x.dropna()
 
             # Criar o modelo KMeans com o número desejado de clusters (ex: 4 clusters)
             kmeans = KMeans(n_clusters=4)
             kmeans.fit(x)
 
             # Adicionar o cluster de cada jogador ao DataFrame
-            grupo['Cluster'] = kmeans.labels_.astype(str)
+            grupo['Cluster'] = kmeans.labels_.astype(str)  # Agora, não precisa de .loc porque temos uma cópia
 
             # Verificar se o jogador de interesse está presente neste ano
-            grupo['is_destacado'] = grupo['jogador__nome'] == jogador_destacado if jogador_destacado else False
+            grupo['is_destacado'] = grupo['jogador__nome'] == jogador_destacado if jogador_destacado else False  # Também sem .loc
 
             # Obter os centroides dos clusters
             centroides = kmeans.cluster_centers_
@@ -329,7 +331,7 @@ class ClusterizacaoView(View):
             ))
 
             # Criar uma view para o jogador destacado
-            view_destacado = CDSView(source=source, filters=[BooleanFilter(grupo['is_destacado'])])
+            view_destacado = CDSView(filter=BooleanFilter(grupo['is_destacado'].values))
 
             # Criar o gráfico de scatter plot para esse ano
             p = figure(title=f"Clusterização - Ano {int(ano)}",
@@ -357,16 +359,20 @@ class ClusterizacaoView(View):
             graficos_por_ano.append(p)
 
         # Organizar os gráficos lado a lado
-        grid = gridplot(graficos_por_ano, ncols=2)  # Ajuste ncols conforme o número de gráficos e espaço
+        grid = gridplot(graficos_por_ano, ncols=2)
 
         # Renderizar o template com o gráfico
+        script, div = components(p)
+
         context = {
             'jogador_nome': jogador_nome,
             'time_nome': time_nome,
-            'graficos': grid,
+            'graficos_script': script,
+            'graficos_div': div,
             'dados_jogador': dados
         }
         return render(request, self.template_name, context)
+
 
 
 class PredicaoView(View):

@@ -26,11 +26,18 @@
         </div>
     </form>
 
-
     {% if error_message %}
         <div class="alert alert-danger mt-4 text-center">
             {{ error_message }}
         </div>
     {% endif %}
+
+    <!-- Adicionando o gráfico -->
+    <div class="mt-4">
+        {{ graficos_div|safe }}  <!-- Adiciona o gráfico aqui -->
+    </div>
+    <script>
+        {{ graficos_script|safe }}  <!-- Adiciona o script do gráfico aqui -->
+    </script>
 </div>
 {% endblock %}

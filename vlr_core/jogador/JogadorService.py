@@ -85,6 +85,11 @@ class JogadorService:
             return None
 
     def obter_dados_jogador_clusterizacao(self, nome_jogador=None, time_nome=None, ano=None):
+        # Se não foi fornecido um nome de jogador, retorna dados de todos os jogadores
+        if not nome_jogador:
+            return self.repository.get_dados_jogador_clusterizacao()
+
+        # Caso um nome de jogador tenha sido fornecido, faz a busca específica
         jogadores = self.repository.get_jogador_by_name(nome_jogador)
 
         if not jogadores.exists():

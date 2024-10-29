@@ -77,10 +77,8 @@ class GraficoService:
                 p.line(x, y, line_color=cor, legend_label=jogador_nome, line_width=2)
                 p.patch(x, y, fill_color=cor, fill_alpha=0.2)
 
-                # Adicionar marcadores nos pontos
                 pontos = p.scatter('x', 'y', size=6, color=cor, source=source, marker="circle")
 
-                # Adicionar ferramenta de hover
                 hover = HoverTool(tooltips=[
                     ('Atributo', '@atributo'),
                     ('Valor', '@valor{0.00}'),

@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
 Detalhes do Time
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -33,7 +38,7 @@ Detalhes do Time
         </thead>
         <tbody>
             {% for item in partidas %}
-            <tr class="{% if item.resultado == 'Vitória' %}table-success{% else %}table-danger{% endif %}">
+            <tr class="{% if item.resultado == 'Vitória' %}custom-victory{% else %}custom-defeat{% endif %}">
                 <td>{{ item.partida.sequencia_partida.data }}</td>
                 <td>
                     {% if item.partida.sequencia_partida.time1.id == time.id %}
@@ -51,7 +56,14 @@ Detalhes do Time
     <nav>
         <ul class="pagination">
             {% if partidas.has_previous %}
-            <li class="page-item"><a class="page-link" href="?page={{ partidas.previous_page_number }}">Anterior</a></li>
+
+                <li class="page-item">
+                    <a class="page-link" href="?page=1">«</a>
+                </li>
+
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ partidas.previous_page_number }}">Anterior</a>
+                </li>
             {% endif %}
 
             {% for num in partidas.paginator.page_range %}
@@ -69,12 +81,18 @@ Detalhes do Time
             {% endfor %}
 
             {% if partidas.has_next %}
-            <li class="page-item"><a class="page-link" href="?page={{ partidas.next_page_number }}">Próxima</a></li>
+
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ partidas.next_page_number }}">Próxima</a>
+                </li>
+
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ partidas.paginator.num_pages }}">»</a>
+                </li>
             {% endif %}
         </ul>
     </nav>
 
-    <!-- Botão para voltar à lista de times (também no final da página) -->
     <div class="mt-4">
         <a href="{% url 'lista_times' %}" class="btn btn-secondary">Voltar para a lista de times</a>
     </div>

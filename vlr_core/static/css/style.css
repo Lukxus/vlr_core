@@ -99,5 +99,12 @@ h2, p {
     color: white;
 }
 
+.custom-victory {
+    background-color: #5CA617 !important;
+    color: white !important;
+}
 
-
+.custom-defeat {
+    background-color: #bf2d09 !important;
+    color: white !important;
+}

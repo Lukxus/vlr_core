@@ -12,10 +12,8 @@ class GraficoService:
 
     @staticmethod
     def gerar_grafico_radial(dados_jogador1, dados_jogador2, nome_jogador1, nome_jogador2, categoria):
-        # Usar os atributos e valores do arquivo de configuração
         atributos_full = ATRIBUTOS
 
-        # Construir o título com base nos nomes dos jogadores e na categoria
         if nome_jogador1 and nome_jogador2:
             titulo = f"Comparação de Atributos: {nome_jogador1} vs {nome_jogador2} - Categoria: {categoria.capitalize()}"
         elif nome_jogador1:
@@ -25,11 +23,12 @@ class GraficoService:
         else:
             titulo = f"Comparação de Atributos - Categoria: {categoria.capitalize()}"
 
-        # Preparar o gráfico
+        # Configurações do gráfico com fundo escuro
         p = figure(title=titulo, x_range=(-1.2, 1.2), y_range=(-1.2, 1.2),
                    toolbar_location=None, tools="")
-
         p.toolbar.logo = None
+        p.background_fill_color = "#2e2e2e"  # fundo escuro
+        p.border_fill_color = "#2e2e2e"
 
         # Desenhar linhas de grade circulares
         num_circulos = 5
@@ -38,7 +37,6 @@ class GraficoService:
             p.annulus(x=0, y=0, inner_radius=0, outer_radius=radius, fill_color=None, line_color='gray',
                       line_dash='dotted', line_width=0.5)
 
-        # Linhas radiais
         angulos = [n / float(len(atributos_full)) * 2 * math.pi for n in range(len(atributos_full))]
         angulos += angulos[:1]  # Fechar o gráfico
 
@@ -47,22 +45,18 @@ class GraficoService:
             y = [0, math.sin(angulo)]
             p.line(x, y, line_color='gray', line_dash='dotted', line_width=0.5)
 
-        # Função para processar dados de cada jogador
         def processar_jogador(jogador_dados, jogador_nome, cor):
             if jogador_dados:
                 valores_norm = []
                 valores_originais = []
                 for attr in atributos_full:
                     valor = jogador_dados.get(attr, 0.00) or 0.00
-
                     valor_max = VALORES_MAXIMOS_GLOBAIS.get(attr, 1.00)
-
-                    # Normalização min-max
                     valor_normalizado = valor / valor_max
                     valores_norm.append(valor_normalizado)
                     valores_originais.append(valor)
 
-                valores_norm += valores_norm[:1]  # Fechar o gráfico
+                valores_norm += valores_norm[:1]
 
                 x = [math.cos(a) * v for a, v in zip(angulos, valores_norm)]
                 y = [math.sin(a) * v for a, v in zip(angulos, valores_norm)]
@@ -74,10 +68,10 @@ class GraficoService:
                     valor=valores_originais,
                 ))
 
-                p.line(x, y, line_color=cor, legend_label=jogador_nome, line_width=2)
-                p.patch(x, y, fill_color=cor, fill_alpha=0.2)
+                linha = p.line(x, y, line_color=cor, legend_label=jogador_nome, line_width=2, muted_alpha=0.2)
+                p.patch(x, y, fill_color=cor, fill_alpha=0.2, muted_alpha=0.1)
 
-                pontos = p.scatter('x', 'y', size=6, color=cor, source=source, marker="circle")
+                pontos = p.scatter('x', 'y', size=6, color=cor, source=source, marker="circle", muted_alpha=0.2)
 
                 hover = HoverTool(tooltips=[
                     ('Atributo', '@atributo'),
@@ -85,28 +79,27 @@ class GraficoService:
                 ], renderers=[pontos])
                 p.add_tools(hover)
 
-        # Paleta de cores
-        cores = Category10[10]
 
-        # Processar cada jogador
-        processar_jogador(dados_jogador1, nome_jogador1, cores[0])
-        processar_jogador(dados_jogador2, nome_jogador2, cores[1])
+        cor_jogador1 = "#83e22b"
+        cor_jogador2 = "#8A2BE2"
 
-        # Adicionar os labels dos atributos
+        processar_jogador(dados_jogador1, nome_jogador1, cor_jogador1)
+        processar_jogador(dados_jogador2, nome_jogador2, cor_jogador2)
+
         labels_attrs = [LABELS_MAPPING.get(attr, attr.upper()) for attr in atributos_full]
         label_x = [math.cos(a) * 1.05 for a in angulos[:-1]]
         label_y = [math.sin(a) * 1.05 for a in angulos[:-1]]
         label_source = ColumnDataSource(data=dict(x=label_x, y=label_y, labels=labels_attrs))
 
         labels = LabelSet(x='x', y='y', text='labels', source=label_source,
-                          text_align='center', text_baseline='middle', text_font_size='9pt')
+                          text_align='center', text_baseline='middle', text_font_size='9pt', text_color="white")
         p.add_layout(labels)
 
         p.axis.visible = False
         p.grid.visible = False
         p.outline_line_color = None
         p.legend.location = "top_right"
-        p.legend.click_policy = "hide"
+        p.legend.click_policy = "mute"  # Configuração para desabilitar o gráfico ao clicar
 
         script, div = components(p)
         return script, div
